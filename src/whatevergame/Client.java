@@ -9,6 +9,8 @@ import whatevergame.communication.Reciever;
 
 public class Client
 {
+    // Server settings
+    // TODO : Should not be hard-coded
     protected final static String address = "10.2.2.121";
     protected final static int port = 3000;
 
@@ -21,6 +23,10 @@ public class Client
 
     public Client()
     {
+        // TODO : For testing...
+        new Server();
+        System.out.println("Server up and running!");
+
         // Communicator
         //Sender sender = new Sender();
         //sender.start();
