@@ -13,24 +13,27 @@ import java.net.UnknownHostException;
 // closed etc?
 public class Connection
 {
-    //protected String address;
-    //protected int port;
+    protected String address;
+    protected int port;
     protected Socket socket;
     protected ObjectOutputStream objectOutputStream;
     protected ObjectInputStream objectInputStream;
 
     public Connection(String address, int port)
     {
-        this.connect(address, port);
+        this.address = address;
+        this.port = port;
+        //this.connect(address, port);
     }
     
-    public void connect(String address, int port)
+    public boolean connect()
     {
         try
         {
             socket = new Socket(address, port);
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
+            return true;
         }
         catch (UnknownHostException e)
         {
@@ -42,6 +45,7 @@ public class Connection
             // TODO : ? Act properly...
             System.out.println("ERROR (IO): " + e.getMessage());
         }
+        return false;
     }
 
     // TODO : Not used at the moment, is it needed?

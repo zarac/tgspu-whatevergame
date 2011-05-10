@@ -4,6 +4,7 @@ public class Reciever extends Thread
 {
     public Reciever()
     {
+        start();
     }
 
     /**

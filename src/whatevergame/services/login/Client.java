@@ -10,17 +10,21 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import whatevergame.communication.Communicator;
 import whatevergame.communication.WrappedPackage;
 
 import whatevergame.Service;
 import whatevergame.Package;
+import whatevergame.Session;
 
 public class Client extends Service
 {
     protected Gui gui;
 
-    public Client()
+    public Client(int serviceId, Communicator communicator, Session session)
     {
+        super(serviceId, communicator);
+        sessions.add(session);
         gui = new Gui();
     }
 
@@ -34,17 +38,9 @@ public class Client extends Service
         return this.gui;
     }
 
-    /**
-     * {@inheritDoc}
-     * @see Runnable#run()
-     */
-    public void run()
-    {
-    }
-
     public void logIn(String username, String password)
     {
-        sendPackage(new Package(new Content(username, password), serviceId, NO_SESSION_ID));
+        sendPackage(new Package(new Content(username, password), serviceId, NO_SERVICE_ID));
     }
 
     /**
@@ -125,6 +121,7 @@ public class Client extends Service
             {
                 //feedback.setText("You entered username='" + username.getText() + "', password='" + new String(password.getPassword()) + "'");
                 feedback.setText("Hold on to something while we're trying to log you in...");
+                logIn(username.getText(), new String(password.getPassword()));
             }
         }
     }

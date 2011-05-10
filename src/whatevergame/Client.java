@@ -9,8 +9,8 @@ import whatevergame.communication.Reciever;
 
 public class Client
 {
-    private final static String address = "10.2.2.121";
-    private final static int port = 3000;
+    protected final static String address = "10.2.2.121";
+    protected final static int port = 3000;
 
     protected Communicator communicator;
     protected Service[] services;
@@ -22,27 +22,37 @@ public class Client
     public Client()
     {
         // Communicator
-        Sender sender = new Sender();
+        //Sender sender = new Sender();
         //sender.start();
-        Reciever reciever = new Reciever();
+        //Reciever reciever = new Reciever();
         //reciever.start();
-        communicator = new Communicator(sender, reciever);
+        //communicator = new Communicator(sender, reciever);
 
         // Services
         // TODO : ? Should not be hard-coded?  The login service is required,
         // hence we're hard-coding all at the moment.
-        services = new Service[4];
+        services = new Service[Service.COUNT];
 
         // Session
         Connection connection = new Connection(address, port);
-        session = new Session(connection, -1);
+        if (connection.connect())
+        {
+            session = new Session(connection, -1);
 
-        // TODO : TESTING...
-        whatevergame.services.login.Client loginClient = new whatevergame.services.login.Client();
-        gui = new Gui();
-        services[0] = loginClient;
-        services[0].start();
-        gui.add(loginClient.getGui());
+            // TODO : TESTING...
+            // LogIn
+            whatevergame.services.login.Client loginClient = new
+                whatevergame.services.login.Client(Service.LOGIN, new
+                        Communicator(new Sender(), new Reciever()), session);
+            gui = new Gui();
+            services[Service.LOGIN] = loginClient;
+            services[Service.LOGIN].start();
+            gui.add(loginClient.getGui());
+        }
+        else
+        {
+            System.out.println("ERROR: Cannot connect to server.");
+        }
     }
 
     public static void main(String[] args)

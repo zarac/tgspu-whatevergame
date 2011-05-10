@@ -12,6 +12,7 @@ public class Sender extends Thread
     public Sender()
     {
         queue = new PriorityQueue<WrappedPackage>();
+        start();
     }
 
     public void send(WrappedPackage wrappedPackage)
@@ -27,12 +28,13 @@ public class Sender extends Thread
     {
         while (true)
         {
-            WrappedPackage wrappedPackage = queue.remove();
-            if (wrappedPackage != null)
+            if (!queue.isEmpty())
             {
+                WrappedPackage wrappedPackage = queue.remove();
                 try
                 {
-                    // TODO : IAMHERE
+                    System.out.println("1" + wrappedPackage.getConnection());
+                    System.out.println("2" + wrappedPackage.getConnection().getObjectOutputStream());
                     ObjectOutputStream oos = wrappedPackage.getConnection().getObjectOutputStream();
                     oos.writeObject(wrappedPackage.getPackage());
                     oos.flush();
