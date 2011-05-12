@@ -11,7 +11,7 @@ public class Client
 {
     // Server settings
     // TODO : Should not be hard-coded
-    protected final static String address = "10.2.2.121";
+    protected final static String address = "127.0.0.1";
     protected final static int port = 3000;
 
     protected Communicator communicator;
@@ -23,9 +23,7 @@ public class Client
 
     public Client()
     {
-        // TODO : For testing...
-        new Server();
-        System.out.println("Server up and running!");
+        gui = new Gui();
 
         // Communicator
         //Sender sender = new Sender();
@@ -50,7 +48,6 @@ public class Client
             whatevergame.services.login.Client loginClient = new
                 whatevergame.services.login.Client(Service.LOGIN, new
                         Communicator(new Sender(), new Reciever()), session);
-            gui = new Gui();
             services[Service.LOGIN] = loginClient;
             services[Service.LOGIN].start();
             gui.add(loginClient.getGui());
@@ -63,6 +60,10 @@ public class Client
 
     public static void main(String[] args)
     {
+        // TODO : For testing...
+        new Server();
+        System.out.println("Server should be up and running!");
+
         new Client();
     }
 
@@ -71,8 +72,9 @@ public class Client
     {
         public Gui()
         {
+            setTitle("Client");
             setDefaultCloseOperation(EXIT_ON_CLOSE);
-            setBounds(100, 100, 640, 480);
+            setBounds(50, 100, 640, 480);
             setVisible(true);
         }
     }

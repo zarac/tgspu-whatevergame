@@ -9,11 +9,11 @@ abstract public class Service extends Thread
 {
     public final static int NO_SERVICE_ID = -1;
     // TODO : Should not be hard-coded.
+    public final static int COUNT = 4;
     public final static int LOGIN = 0;
     public final static int CHAT = 1;
     public final static int PEWPEW = 2;
     public final static int FIVEPAD = 3;
-    public final static int COUNT = 4;
 
     protected int serviceId;
     // TODO : LinkedList?

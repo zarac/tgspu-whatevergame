@@ -1,8 +1,11 @@
 package whatevergame;
 
+import java.awt.FlowLayout;
+
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import whatevergame.communication.Communicator;
 import whatevergame.communication.Reciever;
@@ -21,10 +24,14 @@ public class Server
     {
         gui = new Gui(this);
 
+        // Login server
         services = new Service[Service.COUNT];
         whatevergame.services.login.Server loginServer = new
             whatevergame.services.login.Server(Service.LOGIN, new
                     Communicator(new Sender(), new Reciever()));
+        services[Service.LOGIN] = loginServer;
+        loginServer.start();
+        gui.add(loginServer.getGui());
     }
     
     public static void main(String[] args)
@@ -37,6 +44,11 @@ public class Server
     {
         public Gui(Server server)
         {
+            setTitle("Server");
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+            setBounds(700, 100, 640, 480);
+            setLayout(new FlowLayout());
+            setVisible(true);
         }
     }
 }

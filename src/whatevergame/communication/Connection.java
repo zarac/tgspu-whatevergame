@@ -30,6 +30,7 @@ public class Connection
     {
         try
         {
+            System.out.println(address + " : " + port);
             socket = new Socket(address, port);
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -45,6 +46,7 @@ public class Connection
             // TODO : ? Act properly...
             System.out.println("ERROR (IO): " + e.getMessage());
         }
+
         return false;
     }
 

@@ -33,7 +33,7 @@ public class Client extends Service
      *
      * @return The gui.
      */
-    public Gui getGui()
+    public JPanel getGui()
     {
         return this.gui;
     }
