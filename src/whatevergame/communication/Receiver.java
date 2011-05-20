@@ -5,8 +5,6 @@ import java.io.ObjectInputStream;
 
 import java.lang.ClassNotFoundException;
 
-import java.util.Calendar;
-
 import logging.Logger;
 
 import whatevergame.services.Package;
@@ -69,7 +67,7 @@ public class Receiver extends Thread
             try
             {
                 Package _package = (Package)ois.readObject();
-                logger.debug("run(): Received package '" + _package + "' at '" + Calendar.getInstance().getTime() + "'. Sending to service '" + _package.getServiceId() + "'");
+                logger.debug("run(): Received package '" + _package + "'., Sending to service '" + _package.getServiceId() + "'.");
                 services[_package.getServiceId()].receivePackage(_package);
             }
             catch (IOException e)

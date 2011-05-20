@@ -3,7 +3,6 @@ package whatevergame.communication;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import java.util.Calendar;
 import java.util.LinkedList;
 
 import logging.Logger;
@@ -69,7 +68,7 @@ public class Sender
      */
     protected boolean send(Package p_package)
     {
-        logger.debug("Sender.send(" + p_package + "): Trying to send at '" + Calendar.getInstance().getTime() + "'");
+        logger.debug("Sender.send(" + p_package + "): Trying to send...");
         try
         {
             oos.writeObject(p_package);

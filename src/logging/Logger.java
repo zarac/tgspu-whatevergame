@@ -83,7 +83,7 @@ public class Logger
 
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        log(LEVEL_START, getLogTag() + " at " + getTimestamp());
+        log(LEVEL_START, object.toString());
     }
 
     /**
