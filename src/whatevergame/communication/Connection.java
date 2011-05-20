@@ -57,23 +57,23 @@ public class Connection
      */
     public boolean connect()
     {
-        logger.debug("Connection.connect(): Trying to set up connection...");
+        logger.debug("Trying to set up connection...");
         try
         {
             sender = new Sender(new ObjectOutputStream(socket.getOutputStream()));
-            logger.debug("Connection.connect(): Created Sender");
+            logger.debug("Created Sender");
             InputStream stream = socket.getInputStream();
-            logger.debug("Connection.connect(): Got InputStream");
+            logger.debug("Got InputStream");
             // TODO : ? time out waiting for inputStream
             ObjectInputStream ois = new ObjectInputStream(stream);
-            logger.debug("Connection.connect(): Created ObjectInputStream");
+            logger.debug("Created ObjectInputStream");
             receiver = new Receiver(services, ois);
-            logger.debug("Connection.connect(): Created Receiver");
+            logger.debug("Created Receiver");
             return true;
         }
         catch (IOException e)
         {
-            logger.error("Connection.connect(): ERROR: Could not get output/input stream (" + e.getMessage() + ").");
+            logger.error("Could not get output/input stream (" + e.getMessage() + ").");
             return false;
         }
     }

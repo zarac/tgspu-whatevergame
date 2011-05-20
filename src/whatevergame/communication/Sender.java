@@ -68,17 +68,17 @@ public class Sender
      */
     protected boolean send(Package p_package)
     {
-        logger.debug("Sender.send(" + p_package + "): Trying to send...");
+        logger.debug("Trying to send package '" + p_package + "'.");
         try
         {
             oos.writeObject(p_package);
-            logger.debug("Sender.send(): Package sent!");
+            logger.debug("Package sent!");
             sentCount++;
             return true;
         }
         catch (IOException e)
         {
-            logger.error("Sender.send(): ERROR: Failed writing object to output stream (" + e.getMessage() + ").");
+            logger.error("Failed writing object to output stream (" + e.getMessage() + ").");
             failedCount++;
             return false;
         }

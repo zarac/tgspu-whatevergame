@@ -18,10 +18,9 @@ public class Server
 {
     protected int port;
     protected ConnectionCreator connectionCreator;
-    // TODO : Use better data structure.
+    // TODO : ? Use better data structure.
     protected LinkedList<Client> clients;
-    // TODO : protected (just testing for now)
-    public ServerService[] services;
+    protected ServerService[] services;
 
     /**
      * A logger, it's handy to have.
@@ -71,6 +70,11 @@ public class Server
 
     public void addClient(Client client)
     {
+        logger.info("adding client '" + client + "'");
         clients.add(client);
+
+        // TODO : remove, just testing some..
+        logger.comment("adding client to test service");
+        services[Service.TEST].addClient(client);
     }
 }

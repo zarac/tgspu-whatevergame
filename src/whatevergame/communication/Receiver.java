@@ -49,9 +49,9 @@ public class Receiver extends Thread
         this.services = services;
         this.ois = ois;
         logger = new Logger(this);
-        logger.debug("Receiver(): Starting receiver...");
+        logger.debug("Starting receiver...");
         start();
-        logger.debug("Receiver(): Started receiver");
+        logger.debug("Started receiver");
     }
 
     /**
@@ -63,23 +63,23 @@ public class Receiver extends Thread
         active = true;
         while (active)
         {
-            logger.debug("Receiver.run(): Waiting for a package...");
+            logger.debug("Waiting for next package...");
             try
             {
                 Package _package = (Package)ois.readObject();
-                logger.debug("run(): Received package '" + _package + "'., Sending to service '" + _package.getServiceId() + "'.");
+                logger.debug("Received package '" + _package + "'., Sending to service '" + _package.getServiceId() + "'.");
                 services[_package.getServiceId()].receivePackage(_package);
             }
             catch (IOException e)
             {
-                logger.error("run(): ERROR: Could not read object from object input stream (" + e.getMessage() + ").");
-                logger.error("run(): Deactivating!");
+                logger.error("Could not read object from object input stream (" + e.getMessage() + ").");
+                logger.error("Deactivating!");
                 active = false;
             }
             catch (ClassNotFoundException e)
             {
-                logger.error("run(): ERROR: Class not found (" + e.getMessage() + ").");
-                logger.error("run(): Deactivating!");
+                logger.error("Class not found (" + e.getMessage() + ").");
+                logger.error("Deactivating!");
                 active = false;
             }
         }

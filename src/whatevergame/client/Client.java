@@ -61,17 +61,17 @@ public class Client
         try
         {
             connection = new Connection(services, new Socket(serverIp, serverPort), -1);
-            logger.info("Client(): Connected to server '" + serverIp + ":" + serverPort + "', yay!");
+            logger.info("Connected to server '" + serverIp + ":" + serverPort + "', yay!");
             return true;
         }
         catch (UnknownHostException e)
         {
-            logger.warning("Client(): ERROR: Could not create socket, unknown host (" + e.getMessage() + ").");
+            logger.error("Could not create socket, unknown host (" + e.getMessage() + ").");
             return false;
         }
         catch (IOException e)
         {
-            logger.warning("Client(): ERROR: Could not create socket (" + e.getMessage() + ").");
+            logger.error("Could not create socket (" + e.getMessage() + ").");
             return false;
         }
     }

@@ -31,7 +31,8 @@ public class Client extends ClientService
      */
     public void receivePackage(Package p_package)
     {
-        logger.debug("receivePackage(" + p_package.toString() + "): Test Client gotz package! Sending back a test message...");
+        logger.debug("Received package '" + p_package.toString() + "'");
+        logger.debug("Sending return test package..");
         send(new Package(new Content("Hello right back at ya! ;)"), id));
     }
 }

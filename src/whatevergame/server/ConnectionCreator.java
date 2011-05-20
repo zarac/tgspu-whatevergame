@@ -9,8 +9,6 @@ import logging.Logger;
 
 import whatevergame.communication.Connection;
 
-import whatevergame.services.Service;
-
 /**
  * Waits connecting clients.
  * 
@@ -51,13 +49,13 @@ public class ConnectionCreator extends Thread
     {
         try
         {
+            logger.info("Creating ServerSocket.");
             serverSocket = new ServerSocket(server.getPort());
-            acceptingConnections = true;
             return true;
         }
         catch (IOException e)
         {
-            logger.error("ERROR: Could not create socket (" + e.getMessage() + ").");
+            logger.error("Could not create socket (" + e.getMessage() + ").");
         }
 
         acceptingConnections = false;
@@ -70,24 +68,23 @@ public class ConnectionCreator extends Thread
      */
     public void run()
     {
+        acceptingConnections = true;
         while (acceptingConnections)
         {
-            logger.info("ConnectionCreator(): Waiting for incoming connection.");
+            logger.info("Waiting for incoming connection.");
             try
             {
                 Socket socket = serverSocket.accept();
-                logger.info("ConnectionCreator(): Accepted socket.");
+                logger.info("Accepted socket.");
                 Connection connection = new Connection(server.getServices(), socket, nextSessionId++);
-                logger.info("ConnectionCreator(): Created connection.");
+                //logger.info("Created connection '" + connection + "'.");
                 Client client = new Client(connection);
+                //logger.info("Created client '" + client + "'.");
                 server.addClient(client);
-                logger.info("ConnectionCreator(): Added client.");
-                // test
-                server.services[Service.TEST].addClient(client);
             }
             catch (IOException e)
             {
-                logger.error("ERROR: Could not accept connection (" + e.getMessage() + ").");
+                logger.error("Could not accept connection (" + e.getMessage() + ").");
             }
         }
     }

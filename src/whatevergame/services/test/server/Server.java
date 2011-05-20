@@ -41,7 +41,7 @@ public class Server extends ServerService
      */
     public void receivePackage(Package p_package)
     {
-        logger.debug("receivePackage(" + p_package.toString() + "):");
+        logger.debug("Received package '" + p_package.toString() + "'");
     }
 
     /**
@@ -53,7 +53,7 @@ public class Server extends ServerService
     public void addClient(Client client)
     {
         super.addClient(client);
-        logger.info("addClient(): Sending test package" + client);
+        logger.info("Sending test package to client '" + client + "'.");
         // TODO : Why are parenthesis needed?
         client.send(new Package(new Content("Hello " + (client.getIpAddress()) + "! id='" + id + "'"), id));
     }
