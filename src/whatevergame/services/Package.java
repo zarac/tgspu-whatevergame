@@ -34,6 +34,16 @@ public class Package implements Serializable
     }
 
     /**
+     * Gets the content for this instance.
+     *
+     * @return The content.
+     */
+    public Content getContent()
+    {
+        return this.content;
+    }
+
+    /**
      * Gets the serviceId for this instance.
      *
      * @return The serviceId.
