@@ -1,0 +1,19 @@
+Whatever Game
+=============
+About
+    A gaming platform with two games; Pew Wep and 5Pad.
+    This is a school project for "Datavetenskap I - Programvarukonstruktion [2011]".
+Authors
+    Hannes Landstedt
+    Simon Landstedt
+    Anders Wik
+    Algot Unknown
+Kriterier
+    Många spelinstanser
+    Ett spel
+        Flera spela (VG)
+    Turordningsbaserat
+    Tydligt spelavslut med poängresultat
+    Möjlighet till returmatch (VG)
+    Tappat kommunikation
+    Tidigt avslut
