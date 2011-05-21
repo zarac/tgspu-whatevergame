@@ -17,3 +17,10 @@ Kriterier
     Möjlighet till returmatch (VG)
     Tappat kommunikation
     Tidigt avslut
+Resources
+    Threads
+        : http://download.oracle.com/javase/1,5.0/docs/api/java/lang/Thread.State.html
+        : http://www.janeg.ca/scjp/threads/state.html
+        : http://www.roseindia.net/java/thread/index.shtml
+            : http://www.roseindia.net/java/thread/life-cycle-of-threads.shtml
+            : http://www.roseindia.net/java/thread/thread-creation.shtml
