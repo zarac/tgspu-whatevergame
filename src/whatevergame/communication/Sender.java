@@ -52,12 +52,16 @@ public class Sender
      * 
      * @param p_package The package to send.
      */
-    public void enQueue(Package p_package)
+    synchronized public void enqueue(Package p_package)
     {
+        logger.debug("Queuing package:\n    [" + p_package + "]");
+
         queue.add(p_package);
 
-        if (!worker.isRunning())
+        // TODO : Fix IllegalThreadStateException "bug"
+        if (!worker.isAlive())
             worker.start();
+            //worker.start();
     }
 
     /**
@@ -68,7 +72,7 @@ public class Sender
      */
     protected boolean send(Package p_package)
     {
-        logger.debug("Trying to send package '" + p_package + "'.");
+        logger.debug("Trying to send package:\n    [" + p_package + "]");
         try
         {
             oos.writeObject(p_package);
@@ -97,13 +101,28 @@ public class Sender
          */
         public void run()
         {
+            logger.debug("Starting send worker.\n    [queue size='" + queue.size() + "']");
             isRunning = true;
             while (isRunning)
             {
                 if (!queue.isEmpty())
+                {
                     send(queue.remove());
+                    logger.debug("Remaining packages in queue\n    [" + queue.size() + "]");
+                }
                 else
-                    isRunning = false;
+                {
+                    try
+                    {
+                        logger.info("queue was empty, sleeping for 100ms");
+                        sleep(1000);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        logger.warning("thread was interrupted while sleeping");
+                    }
+                    //isRunning = false;
+                }
             }
         }
 

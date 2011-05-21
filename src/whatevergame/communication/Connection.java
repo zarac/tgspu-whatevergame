@@ -79,13 +79,13 @@ public class Connection
     }
 
     /**
-     * Enques a package in the sender.
+     * Queues a package in the sender.
      * 
      * @param p_package The package to enqueue.
      */
     public void send(Package p_package)
     {
-        sender.enQueue(p_package);
+        sender.enqueue(p_package);
     }
 
     /**

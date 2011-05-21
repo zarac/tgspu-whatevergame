@@ -44,7 +44,6 @@ abstract public class ClientService extends Service
      */
     public void send(Package p_package)
     {
-        logger.debug("Sending package '" + p_package + "'.");
         connection.send(p_package);
     }
 }

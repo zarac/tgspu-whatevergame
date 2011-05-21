@@ -63,11 +63,6 @@ public class Logger
     protected Object object;
 
     /**
-     * Used to get the timestamp.
-     */
-    protected Calendar calendar;
-
-    /**
      * Date format.
      */
     protected static SimpleDateFormat dateFormat;
@@ -81,7 +76,6 @@ public class Logger
     {
         this.object = object;
 
-        calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat(DATE_FORMAT);
         log(LEVEL_START, object.toString());
     }
@@ -177,7 +171,7 @@ public class Logger
      */
     protected String getTimestamp()
     {
-        return dateFormat.format(calendar.getTime());
+        return dateFormat.format(Calendar.getInstance().getTime());
     }
 
     /**

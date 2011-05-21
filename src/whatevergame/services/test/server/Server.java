@@ -54,6 +54,10 @@ public class Server extends ServerService
     {
         super.addClient(client);
         logger.info("Sending test package to client '" + client + "'.");
+        client.send(new Package(new Content("test package #1"), id));
+        client.send(new Package(new Content("test package #2"), id));
+        client.send(new Package(new Content("test package #3"), id));
+
         // TODO : Why are parenthesis needed?
         client.send(new Package(new Content("Hello " + (client.getIpAddress()) + "! id='" + id + "'"), id));
     }

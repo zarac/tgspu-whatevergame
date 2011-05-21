@@ -49,6 +49,7 @@ public class Receiver extends Thread
         this.services = services;
         this.ois = ois;
         logger = new Logger(this);
+        logger.info("services=" + services);
         logger.debug("Starting receiver...");
         start();
         logger.debug("Started receiver");
@@ -68,7 +69,11 @@ public class Receiver extends Thread
             {
                 Package _package = (Package)ois.readObject();
                 logger.debug("Received package '" + _package + "'., Sending to service '" + _package.getServiceId() + "'.");
+                logger.debug("services=" + services);
+                logger.debug("_package=" + _package);
+                logger.debug("service=" + services[_package.getServiceId()]);
                 services[_package.getServiceId()].receivePackage(_package);
+                logger.debug("HEEELLLOO?");
             }
             catch (IOException e)
             {

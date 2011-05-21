@@ -46,6 +46,7 @@ public class Server
 
         services = new ServerService[Service.COUNT];
         services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST);
+        services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN);
     }
 
     /**
@@ -68,6 +69,11 @@ public class Server
         return this.services;
     }
 
+    /**
+     * 
+     * 
+     * @param client
+     */
     public void addClient(Client client)
     {
         logger.info("adding client '" + client + "'");
@@ -76,5 +82,6 @@ public class Server
         // TODO : remove, just testing some..
         logger.comment("adding client to test service");
         services[Service.TEST].addClient(client);
+        services[Service.LOGIN].addClient(client);
     }
 }

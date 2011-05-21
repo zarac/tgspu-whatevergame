@@ -1,5 +1,7 @@
 package whatevergame.services.test.client;
 
+import logging.Logger;
+
 import whatevergame.communication.Connection;
 
 import whatevergame.services.ClientService;
@@ -16,12 +18,19 @@ import whatevergame.services.test.Content;
 public class Client extends ClientService
 {
     /**
+     * A logger, it's handy to have.
+     */
+    protected Logger logger;
+
+    /**
      * {@inheritDoc}
      * @see ClientService#Client(int,Connection)
      */
     public Client(int id, Connection connection)
     {
         super(id, connection);
+
+        logger = new Logger(this);
     }
 
     /**

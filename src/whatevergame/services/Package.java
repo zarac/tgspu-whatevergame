@@ -22,7 +22,7 @@ public class Package implements Serializable
     protected int serviceId;
 
     /**
-     * Packages content to be delevered to a service.
+     * Packages content to be delivered to a service.
      * 
      * @param content The content to package.
      * @param serviceId ID of service to receive package.

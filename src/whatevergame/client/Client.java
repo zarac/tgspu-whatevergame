@@ -41,12 +41,16 @@ public class Client
     {
         logger = new Logger(this);
 
+        services = new Service[Service.COUNT];
+
         serverIp = ip;
         serverPort = port;
-        services = new Service[Service.COUNT];
         connect();
+
+        // Register services
         // TODO : ? ClientService should take Client instead so connection can be initiated afterwards services.
         services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, connection);
+        services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, connection);
     }
 
     /**
