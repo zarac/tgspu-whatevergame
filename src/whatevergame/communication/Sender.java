@@ -27,6 +27,8 @@ public class Sender
     protected LinkedList<Package> queue;
     protected Worker worker;
 
+    protected int WAIT_TIME = 100;
+
     /**
      * A logger, it's handy to have.
      */
@@ -40,11 +42,12 @@ public class Sender
     public Sender(ObjectOutputStream oos)
     {
         logger = new Logger(this);
+
+        this.oos = oos;
         sentCount = 0;
         failedCount = 0;
         queue = new LinkedList<Package>();
         worker = new Worker();
-        this.oos = oos;
     }
 
     /**
@@ -72,7 +75,7 @@ public class Sender
      */
     protected boolean send(Package p_package)
     {
-        logger.debug("Trying to send package:\n    [" + p_package + "]");
+        logger.debug("trying to send package:\n    [" + p_package + "]");
         try
         {
             oos.writeObject(p_package);
@@ -107,15 +110,17 @@ public class Sender
             {
                 if (!queue.isEmpty())
                 {
-                    send(queue.remove());
+                    Package thePackage = queue.remove();
+                    logger.debug("sending package\n    [" + thePackage + "]");
+                    send(thePackage);
                     logger.debug("Remaining packages in queue\n    [" + queue.size() + "]");
                 }
                 else
                 {
                     try
                     {
-                        logger.info("queue was empty, sleeping for 100ms");
-                        sleep(1000);
+                        //logger.info("queue was empty, sleeping for " + WAIT_TIME + " seconds");
+                        sleep(WAIT_TIME);
                     }
                     catch (InterruptedException e)
                     {

@@ -1,7 +1,5 @@
 package whatevergame.services.login.server;
 
-import logging.Logger;
-
 import whatevergame.communication.Connection;
 
 import whatevergame.server.Client;
@@ -9,44 +7,39 @@ import whatevergame.server.Client;
 import whatevergame.services.ServerService;
 
 import whatevergame.services.login.Content;
-import whatevergame.services.Package;
 
+/**
+ * Takes care of clients who want to log in in order to gain privileges.
+ * 
+ * @author Hannes Landstedt (hannes.landstedt@gmail.com)
+ * @version null
+ */
 public class Server extends ServerService
 {
-    /**
-     * A logger, it's handy to have.
-     */
-    protected Logger logger;
-
     /**
      * @see ServerService#ServerService(int,Connection)
      */
     public Server(int id)
     {
         super(id);
-
-        logger = new Logger(this);
     }
 
-    /**
-     * {@inheritDoc}
-     * @see whatevergame.services.Service#receivePackage(Package)
-     */
-    public void receivePackage(Package p_package)
+    // TODO : Shouldn't need to cast.
+    public void receive(Client client, whatevergame.services.Content p_content)
     {
-        logger.debug("LoginService received package\n    [" + p_package + "]");
+        Content content = (Content)p_content;
+        logger.debug("LoginService received content\n    [" + content + "]\nfrom client\n    [" + client + "]");
 
-        Content content = (Content)p_package.getContent();
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
-                logger.debug("trying to log in, huh?");
+                send(client, new Content(Content.CMD_LOGIN, "trying to log in, huh?"));
                 break;
             case (Content.CMD_LOGOUT):
-                logger.debug("trying to log out, huh?");
+                send(client, new Content(Content.CMD_LOGOUT, "trying to log out, huh?"));
                 break;
             case (Content.CMD_REGISTER):
-                logger.debug("trying to register, huh?");
+                send(client, new Content(Content.CMD_REGISTER, "trying to register, huh?"));
                 break;
             default:
                 logger.warning("unknown command");
@@ -61,6 +54,16 @@ public class Server extends ServerService
     {
         super.addClient(client);
         logger.info("client added\n    [" + client + "]");
-        client.send(new Package(new Content(Content.CMD_LOGIN, "Wellcome!"), id));
+        send(client, new Content(Content.CMD_LOGIN, "Wellcome!"));
+    }
+
+    protected boolean logIn(String username, String password)
+    {
+        if (username.equals("admin") && password.equals("admin"))
+        {
+            return true;
+        }
+        else
+            return false;
     }
 }

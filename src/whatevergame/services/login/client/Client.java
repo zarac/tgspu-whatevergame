@@ -1,22 +1,14 @@
 package whatevergame.services.login.client;
 
-import logging.Logger;
-
 import whatevergame.communication.Connection;
 
 import whatevergame.services.ClientService;
 
 import whatevergame.services.login.Content;
-import whatevergame.services.Package;
 
 public class Client extends ClientService
 {
     protected Gui gui;
-
-    /**
-     * A logger, it's handy to have.
-     */
-    protected Logger logger;
 
     /**
      * @see ClientService#ClientService(int,Connection)
@@ -25,18 +17,16 @@ public class Client extends ClientService
     {
         super(id, connection);
 
-        logger = new Logger(this);
-
         gui = new Gui(this);
     }
 
-    /**
-     * {@inheritDoc}
-     * @see whatevergame.services.Service#receivePackage(Package)
-     */
-    public void receivePackage(Package p_package)
+    // TODO : Shouldn't need to cast.
+    public void receive(whatevergame.services.Content p_content)
     {
-        Content content = (Content)p_package.getContent();
+        Content content = (whatevergame.services.login.Content)p_content;
+
+        logger.debug("receive(" + content + "):");
+
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
@@ -56,12 +46,14 @@ public class Client extends ClientService
     public void logIn(String username, String password)
     {
         // TODO : ? LoginContent(user, pass)
-        send(new Package(new Content(Content.CMD_LOGIN, username + ":" + password), id));
+        //send(new Package(new Content(Content.CMD_LOGIN, username + ":" + password), id));
+        send(new Content(Content.CMD_LOGIN, username + ":" + password));
     }
 
     public void register(String username, String password)
     {
         // TODO : ? RegisterContent(user, pass)
-        send(new Package(new Content(Content.CMD_REGISTER, username + ":" + password), id));
+        //send(new Package(new Content(Content.CMD_REGISTER, username + ":" + password), id));
+        send(new Content(Content.CMD_REGISTER, username + ":" + password));
     }
 }

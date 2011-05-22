@@ -136,6 +136,7 @@ public class Gui extends JFrame
          */
         public void mouseReleased(MouseEvent e)
         {
+            // pass
         }
 
         /**

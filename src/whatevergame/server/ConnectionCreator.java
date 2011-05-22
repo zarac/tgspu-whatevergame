@@ -7,8 +7,6 @@ import java.net.Socket;
 
 import logging.Logger;
 
-import whatevergame.communication.Connection;
-
 /**
  * Waits connecting clients.
  * 
@@ -76,9 +74,11 @@ public class ConnectionCreator extends Thread
             {
                 Socket socket = serverSocket.accept();
                 logger.info("Accepted socket.");
-                Connection connection = new Connection(server.getServices(), socket, nextSessionId++);
+                //Connection connection = new Connection(server.getServices(), socket, nextSessionId++);
+                Client client = new Client(server.getServices(), socket, nextSessionId++);
+                client.connect();
                 //logger.info("Created connection '" + connection + "'.");
-                Client client = new Client(connection);
+                //Client client = new Client(connection);
                 //logger.info("Created client '" + client + "'.");
                 server.addClient(client);
             }

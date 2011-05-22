@@ -1,5 +1,6 @@
 package whatevergame.communication;
 
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -18,6 +19,11 @@ import whatevergame.services.Service;
  */
 public class Receiver extends Thread
 {
+    /**
+     * The connection we're receiving for.
+     */
+    protected Connection connection;
+
     /**
      * The input stream. Incoming data.
      */
@@ -44,11 +50,24 @@ public class Receiver extends Thread
      * @param services Needed so we know where to direct the package.
      * @param ois Stream used for communicating.
      */
-    public Receiver(Service[] services, ObjectInputStream ois)
+    //public Receiver(Service[] services, ObjectInputStream ois)
+    //public Receiver(Connection connection, ObjectInputStream ois)
+    public Receiver(Connection connection)
     {
-        this.services = services;
-        this.ois = ois;
         logger = new Logger(this);
+
+        this.connection = connection;
+        this.services = connection.getServices();
+    }
+
+    public void init() throws IOException
+    {
+        logger.debug("Trying to set up receiver...");
+        InputStream stream = connection.getSocket().getInputStream();
+        logger.debug("Got InputStream");
+        ois = new ObjectInputStream(stream);
+        logger.debug("Created ObjectInputStream");
+
         logger.info("services=" + services);
         logger.debug("Starting receiver...");
         start();
@@ -68,11 +87,14 @@ public class Receiver extends Thread
             try
             {
                 Package _package = (Package)ois.readObject();
-                logger.debug("Received package '" + _package + "'., Sending to service '" + _package.getServiceId() + "'.");
-                logger.debug("services=" + services);
-                logger.debug("_package=" + _package);
+
+                logger.debug("Received package\n    [" + _package + "]");
+                logger.debug("Sending to service\n    [" + _package.getServiceId() + "]");
+                dumpServices();
                 logger.debug("service=" + services[_package.getServiceId()]);
-                services[_package.getServiceId()].receivePackage(_package);
+                // TODO : Should add to buffer!
+                //services[_package.getServiceId()].receivePackage(_package);
+                services[_package.getServiceId()].receivePackage(connection, _package);
                 logger.debug("HEEELLLOO?");
             }
             catch (IOException e)
@@ -87,6 +109,18 @@ public class Receiver extends Thread
                 logger.error("Deactivating!");
                 active = false;
             }
+        }
+    }
+
+    public void dumpServices()
+    {
+        logger.debug("Services:");
+        for (Service service : services)
+        {
+            if (service != null)
+                logger.debug(service.toString());
+            else
+                logger.debug("NULL");
         }
     }
 }

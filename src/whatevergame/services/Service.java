@@ -1,5 +1,9 @@
 package whatevergame.services;
 
+import logging.Logger;
+
+import whatevergame.communication.Connection;
+
 /**
  * Defines a service and THE services used for Whatever Game.
  *
@@ -21,6 +25,11 @@ abstract public class Service
     public final static int TEST = 4;
 
     /**
+     * A logger, it's handy to have.
+     */
+    protected Logger logger;
+
+    /**
      * ID of the service.
      */
     protected int id;
@@ -33,6 +42,8 @@ abstract public class Service
     public Service(int id)
     {
         this.id = id;
+        
+        logger = new Logger(this);
     }
 
     /**
@@ -40,7 +51,7 @@ abstract public class Service
      * 
      * @param p_package The package.
      */
-    abstract public void receivePackage(Package p_package);
+    abstract public void receivePackage(Connection connection, Package p_package);
 
     /**
      * Gets the id for this instance.

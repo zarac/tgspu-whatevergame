@@ -2,6 +2,8 @@ package whatevergame.services;
 
 import java.util.LinkedList;
 
+import whatevergame.communication.Connection;
+
 import whatevergame.server.Client;
 
 /**
@@ -36,4 +38,23 @@ abstract public class ServerService extends Service
     {
         clients.add(client);
     }
+
+    /**
+     * Packages content and sends it to client.
+     * 
+     * @param client The client.
+     * @param content The content.
+     */
+    public void send(Client client, Content content)
+    {
+        client.send(new Package(content, id));
+    }
+
+    // TODO : Why is cast needed? Client is a Connection
+    public void receivePackage(Connection connection, Package p_package)
+    {
+        receive((Client)connection, p_package.getContent());
+    }
+
+    abstract public void receive(Client client, Content content);
 }

@@ -70,9 +70,9 @@ public class Server
     }
 
     /**
+     * Add a client to a list of connected clients.
      * 
-     * 
-     * @param client
+     * @param client The client
      */
     public void addClient(Client client)
     {

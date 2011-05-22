@@ -35,4 +35,9 @@ public class Content extends whatevergame.services.Content
     {
         return this.arguments;
     }
+
+    public String toString()
+    {
+        return "command='" + command + "', arguments='" + arguments + "'";
+    }
 }

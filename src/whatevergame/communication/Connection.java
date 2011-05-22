@@ -34,7 +34,15 @@ public class Connection
     protected Logger logger;
 
     /**
-     * Creates an instance of Connection.
+     * Constructs a new instance.
+     */
+    public Connection()
+    {
+        logger = new Logger(this);
+    }
+
+    /**
+     * Constructs a new instance of Connection and initializes it.
      * 
      * @param services Services needed for directing incoming packages.
      * @param socket The socket used for communication.
@@ -44,10 +52,21 @@ public class Connection
     {
         logger = new Logger(this);
 
+        init(services, socket, sessionId);
+    }
+
+    /**
+     * Initializes the Connection.
+     * 
+     * @param services Services needed for directing incoming packages.
+     * @param socket The socket used for communication.
+     * @param sessionId A session identification number.
+     */
+    public void init(Service[] services, Socket socket, int sessionId)
+    {
         this.services = services;
         this.socket = socket;
         this.sessionId = sessionId;
-        connect();
     }
 
     /**
@@ -57,17 +76,20 @@ public class Connection
      */
     public boolean connect()
     {
+        // TODO : clean up!
         logger.debug("Trying to set up connection...");
         try
         {
             sender = new Sender(new ObjectOutputStream(socket.getOutputStream()));
             logger.debug("Created Sender");
-            InputStream stream = socket.getInputStream();
-            logger.debug("Got InputStream");
+            //InputStream stream = socket.getInputStream();
+            //logger.debug("Got InputStream");
             // TODO : ? time out waiting for inputStream
-            ObjectInputStream ois = new ObjectInputStream(stream);
-            logger.debug("Created ObjectInputStream");
-            receiver = new Receiver(services, ois);
+            //ObjectInputStream ois = new ObjectInputStream(stream);
+            //logger.debug("Created ObjectInputStream");
+            //receiver = new Receiver(services, ois);
+            receiver = new Receiver(this);
+            receiver.init();
             logger.debug("Created Receiver");
             return true;
         }
@@ -85,6 +107,7 @@ public class Connection
      */
     public void send(Package p_package)
     {
+        logger.debug("sender = " + sender);
         sender.enqueue(p_package);
     }
 
@@ -96,5 +119,36 @@ public class Connection
     public String getIpAddress()
     {
         return socket.getInetAddress().toString();
+    }
+
+    /**
+     * Gets the socket for this instance.
+     *
+     * @return The socket.
+     */
+    public Socket getSocket()
+    {
+        return this.socket;
+    }
+
+    /**
+     * Gets the services for this instance.
+     *
+     * @return The services.
+     */
+    public Service[] getServices()
+    {
+        return this.services;
+    }
+
+    /**
+     * Gets the services for this instance.
+     *
+     * @param index The index to get.
+     * @return The services.
+     */
+    public Service getServices(int index)
+    {
+        return this.services[index];
     }
 }

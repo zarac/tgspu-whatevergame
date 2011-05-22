@@ -32,31 +32,33 @@ public class Client
 
     /**
      * Creates an instance of a client.
-     * TODO : Port for incoming communication. Should not be fixed to 3000.
+     * TODO : Local port should not be fixed to 3000.
      * 
      * @param ip Address to connect to.
      * @param port Port to connect to.
      */
     public Client(String ip, int port)
     {
+        serverIp = ip;
+        serverPort = port;
+
         logger = new Logger(this);
 
         services = new Service[Service.COUNT];
-
-        serverIp = ip;
-        serverPort = port;
-        connect();
+        connection = new Connection();
 
         // Register services
         // TODO : ? ClientService should take Client instead so connection can be initiated afterwards services.
         services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, connection);
         services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, connection);
+
+        connect();
     }
 
     /**
      * Tries to connect to the server.
      * 
-     * @return
+     * @return If successful or not.
      */
     public boolean connect()
     {
@@ -64,7 +66,9 @@ public class Client
         // -1 means no session ID
         try
         {
-            connection = new Connection(services, new Socket(serverIp, serverPort), -1);
+            //connection = new Connection(services, new Socket(serverIp, serverPort), -1);
+            connection.init(services, new Socket(serverIp, serverPort), -1);
+            connection.connect();
             logger.info("Connected to server '" + serverIp + ":" + serverPort + "', yay!");
             return true;
         }

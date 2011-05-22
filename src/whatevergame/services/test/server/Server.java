@@ -1,7 +1,5 @@
 package whatevergame.services.test.server;
 
-import logging.Logger;
-
 import whatevergame.server.Client;
 
 import whatevergame.services.Package;
@@ -18,30 +16,25 @@ import whatevergame.services.test.Content;
 public class Server extends ServerService
 {
     /**
-     * A logger, it's handy to have.
-     */
-    protected Logger logger;
-
-    /**
      * {@inheritDoc}
      * @see ServerService#Server(int)
      */
     public Server(int id)
     {
         super(id);
-
-        logger = new Logger(this);
     }
 
     /**
      * Prints the received package.
      *
+     * TODO : Shouldn't need to cast. login.Content is Content!
+     *
      * {@inheritDoc}
      * @see whatevergame.services.Service#receivePackage(Package)
      */
-    public void receivePackage(Package p_package)
+    public void receive(Client client, whatevergame.services.Content content)
     {
-        logger.debug("Received package '" + p_package.toString() + "'");
+        logger.debug("Received content '" + (Content)content + "'");
     }
 
     /**
@@ -54,11 +47,14 @@ public class Server extends ServerService
     {
         super.addClient(client);
         logger.info("Sending test package to client '" + client + "'.");
-        client.send(new Package(new Content("test package #1"), id));
-        client.send(new Package(new Content("test package #2"), id));
-        client.send(new Package(new Content("test package #3"), id));
+        //client.send(new Package(new Content("test package #1"), id));
+        //client.send(new Package(new Content("test package #2"), id));
+        //client.send(new Package(new Content("test package #3"), id));
+        send(client, new Content("test package #1"));
+        send(client, new Content("test package #2"));
+        send(client, new Content("test package #3"));
 
         // TODO : Why are parenthesis needed?
-        client.send(new Package(new Content("Hello " + (client.getIpAddress()) + "! id='" + id + "'"), id));
+        send(client, new Content("Hello " + (client.getIpAddress()) + "! id='" + id + "'"));
     }
 }

@@ -1,8 +1,10 @@
 package whatevergame.server;
 
+import java.net.Socket;
+
 import whatevergame.communication.Connection;
 
-import whatevergame.services.Package;
+import whatevergame.services.Service;
 
 /**
  * Used to keep track of clients connected to the server.
@@ -10,18 +12,20 @@ import whatevergame.services.Package;
  * @author Hannes Landstedt (hannes.landstedt@gmail.com)
  * @version null
  */
-public class Client
+public class Client extends Connection
 {
-    protected Connection connection;
+    //protected Connection connection;
 
     /**
      * Creates an instance of Client.
      * 
      * @param connection The connection to the client.
      */
-    public Client(Connection connection)
+    //public Client(Connection connection)
+    public Client(Service[] services, Socket socket, int sessionId)
     {
-        this.connection = connection;
+        super(services, socket, sessionId);
+        //this.connection = connection;
     }
 
     /**
@@ -29,18 +33,18 @@ public class Client
      * 
      * @return The client's IP address.
      */
-    public String getIpAddress()
-    {
-        return connection.getIpAddress();
-    }
+    //public String getIpAddress()
+    //{
+        //return connection.getIpAddress();
+    //}
 
     /**
      * Forwards a package to be sent. It uses a Connection for this.
      * 
      * @param p_package The package to send.
      */
-    public void send(Package p_package)
-    {
-        connection.send(p_package);
-    }
+    //public void send(Package p_package)
+    //{
+        //connection.send(p_package);
+    //}
 }
