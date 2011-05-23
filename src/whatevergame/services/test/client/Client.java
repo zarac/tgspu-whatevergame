@@ -3,7 +3,6 @@ package whatevergame.services.test.client;
 import whatevergame.communication.Connection;
 
 import whatevergame.services.ClientService;
-import whatevergame.services.Package;
 
 import whatevergame.services.test.Content;
 
@@ -24,25 +23,11 @@ public class Client extends ClientService
         super(id, connection);
     }
 
-    /**
-     * Prints out the received package and sends back a pong message.
-     * {@inheritDoc}
-     * @see Service#receivePackage(Package)
-     */
-    //public void receivePackage(Package p_package)
-    //{
-        //logger.debug("Received package '" + p_package.toString() + "'");
-        //logger.debug("Sending return test package..");
-        ////send(new Package(new Content("Hello right back at ya! ;)"), id));
-        //send(new Content("Hello right back at ya! ;)"));
-    //}
-
     // TODO : Shouldn't need to cast
     public void receive(whatevergame.services.Content content)
     {
         logger.debug("Received content\n    [" + (whatevergame.services.test.Content)content + "]");
         logger.debug("Sending return test package..");
-        //send(new Package(new Content("Hello right back at ya! ;)"), id));
         send(new Content("Hello right back at ya! ;)"));
     }
 }

@@ -28,12 +28,16 @@ public class Server extends ServerService
     public void receive(Client client, whatevergame.services.Content p_content)
     {
         Content content = (Content)p_content;
-        logger.debug("LoginService received content\n    [" + content + "]\nfrom client\n    [" + client + "]");
+        logger.debug("LoginService received content\n    [" + content + "] from client\n    [" + client + "]");
 
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
-                send(client, new Content(Content.CMD_LOGIN, "trying to log in, huh?"));
+                String[] arguments = content.getArguments().split(":");
+                if (logIn(arguments[0], arguments[1]))
+                    send(client, new Content(Content.CMD_LOGIN, "Welcome, " + arguments[0] + "!"));
+                else
+                    send(client, new Content(Content.CMD_LOGIN, "access denied!"));
                 break;
             case (Content.CMD_LOGOUT):
                 send(client, new Content(Content.CMD_LOGOUT, "trying to log out, huh?"));

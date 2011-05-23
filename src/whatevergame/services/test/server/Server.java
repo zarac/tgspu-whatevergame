@@ -32,9 +32,10 @@ public class Server extends ServerService
      * {@inheritDoc}
      * @see whatevergame.services.Service#receivePackage(Package)
      */
-    public void receive(Client client, whatevergame.services.Content content)
+    public void receive(Client client, whatevergame.services.Content p_content)
     {
-        logger.debug("Received content '" + (Content)content + "'");
+        Content content = (Content)p_content;
+        logger.debug("Received content '" + content + "' from client '" + client + "'.");
     }
 
     /**
@@ -46,10 +47,7 @@ public class Server extends ServerService
     public void addClient(Client client)
     {
         super.addClient(client);
-        logger.info("Sending test package to client '" + client + "'.");
-        //client.send(new Package(new Content("test package #1"), id));
-        //client.send(new Package(new Content("test package #2"), id));
-        //client.send(new Package(new Content("test package #3"), id));
+        logger.info("Sending 3 test packages to client '" + client + "'.");
         send(client, new Content("test package #1"));
         send(client, new Content("test package #2"));
         send(client, new Content("test package #3"));

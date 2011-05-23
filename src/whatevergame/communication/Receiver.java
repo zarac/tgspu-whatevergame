@@ -47,11 +47,8 @@ public class Receiver extends Thread
     /**
      * Creates instance of Receiver.
      * 
-     * @param services Needed so we know where to direct the package.
-     * @param ois Stream used for communicating.
+     * @param connection Connection used to create receiver.
      */
-    //public Receiver(Service[] services, ObjectInputStream ois)
-    //public Receiver(Connection connection, ObjectInputStream ois)
     public Receiver(Connection connection)
     {
         logger = new Logger(this);
@@ -60,6 +57,11 @@ public class Receiver extends Thread
         this.services = connection.getServices();
     }
 
+    /**
+     * Initializes the receiver.
+     * 
+     * @throws IOException
+     */
     public void init() throws IOException
     {
         logger.debug("Trying to set up receiver...");
@@ -68,10 +70,10 @@ public class Receiver extends Thread
         ois = new ObjectInputStream(stream);
         logger.debug("Created ObjectInputStream");
 
-        logger.info("services=" + services);
+        logger.debug("services=" + services);
         logger.debug("Starting receiver...");
         start();
-        logger.debug("Started receiver");
+        logger.info("Started receiver");
     }
 
     /**
@@ -112,6 +114,9 @@ public class Receiver extends Thread
         }
     }
 
+    /**
+     * Dumps all services to logger.
+     */
     public void dumpServices()
     {
         logger.debug("Services:");

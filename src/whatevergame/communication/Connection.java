@@ -1,8 +1,6 @@
 package whatevergame.communication;
 
-import java.io.InputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import java.net.Socket;
@@ -51,6 +49,7 @@ public class Connection
     public Connection(Service[] services, Socket socket, int sessionId)
     {
         logger = new Logger(this);
+        System.out.println("Connection(...): logger = " + logger);
 
         init(services, socket, sessionId);
     }
@@ -81,16 +80,11 @@ public class Connection
         try
         {
             sender = new Sender(new ObjectOutputStream(socket.getOutputStream()));
-            logger.debug("Created Sender");
-            //InputStream stream = socket.getInputStream();
-            //logger.debug("Got InputStream");
+            logger.info("Created Sender");
             // TODO : ? time out waiting for inputStream
-            //ObjectInputStream ois = new ObjectInputStream(stream);
-            //logger.debug("Created ObjectInputStream");
-            //receiver = new Receiver(services, ois);
             receiver = new Receiver(this);
             receiver.init();
-            logger.debug("Created Receiver");
+            logger.info("Created Receiver");
             return true;
         }
         catch (IOException e)
@@ -150,5 +144,14 @@ public class Connection
     public Service getServices(int index)
     {
         return this.services[index];
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return "Connection: IP-Address='" + getIpAddress() + "'";
     }
 }

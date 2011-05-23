@@ -6,6 +6,12 @@ import whatevergame.services.ClientService;
 
 import whatevergame.services.login.Content;
 
+/**
+ * The login client service.
+ * 
+ * @author Hannes Landstedt (hannes.landstedt@gmail.com)
+ * @version null
+ */
 public class Client extends ClientService
 {
     protected Gui gui;
@@ -46,14 +52,12 @@ public class Client extends ClientService
     public void logIn(String username, String password)
     {
         // TODO : ? LoginContent(user, pass)
-        //send(new Package(new Content(Content.CMD_LOGIN, username + ":" + password), id));
         send(new Content(Content.CMD_LOGIN, username + ":" + password));
     }
 
     public void register(String username, String password)
     {
         // TODO : ? RegisterContent(user, pass)
-        //send(new Package(new Content(Content.CMD_REGISTER, username + ":" + password), id));
         send(new Content(Content.CMD_REGISTER, username + ":" + password));
     }
 }

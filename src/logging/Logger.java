@@ -77,7 +77,7 @@ public class Logger
         this.object = object;
 
         dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        log(LEVEL_START, object.toString());
+        log(LEVEL_START, Integer.toHexString(object.hashCode()));
     }
 
     /**

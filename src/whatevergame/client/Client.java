@@ -14,9 +14,6 @@ import whatevergame.services.Service;
 /**
  * The client version of Whatever Game.
  *
- * TODO : synchronize (thread safe)
- * TODO : Graceful shut down (all threads).
- * 
  * @author Hannes Landstedt (hannes.landstedt@gmail.com)
  * @version null
  */
@@ -43,16 +40,22 @@ public class Client
         serverPort = port;
 
         logger = new Logger(this);
-
         services = new Service[Service.COUNT];
+        System.out.println("HELLO?");
         connection = new Connection();
+        System.out.println("HELLO!");
 
-        // Register services
-        // TODO : ? ClientService should take Client instead so connection can be initiated afterwards services.
+        initServices();
+        connect();
+    }
+
+    /**
+     * Initializes the services.
+     */
+    public void initServices()
+    {
         services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, connection);
         services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, connection);
-
-        connect();
     }
 
     /**
