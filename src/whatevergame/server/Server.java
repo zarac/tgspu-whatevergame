@@ -48,6 +48,7 @@ public class Server
         services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST);
         services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN);
         services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD);
+        services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD);
     }
 
     /**
@@ -85,5 +86,6 @@ public class Server
         services[Service.TEST].addClient(client);
         services[Service.LOGIN].addClient(client);
         services[Service.MOTD].addClient(client);
+        services[Service.FIVEPAD].addClient(client);
     }
 }
