@@ -126,6 +126,16 @@ public class Connection
     }
 
     /**
+     * Gets the sessionId for this instance.
+     *
+     * @return The sessionId.
+     */
+    public int getSessionId()
+    {
+        return this.sessionId;
+    }
+
+    /**
      * Gets the services for this instance.
      *
      * @return The services.

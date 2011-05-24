@@ -16,12 +16,18 @@ import whatevergame.services.login.Content;
  */
 public class Server extends ServerService
 {
+    protected Database database;
+
     /**
      * @see ServerService#ServerService(int,Connection)
      */
     public Server(int id)
     {
         super(id);
+
+        // database connection
+        database = new Database();
+        database.dumpUserTable();
     }
 
     // TODO : Shouldn't need to cast.
@@ -63,7 +69,9 @@ public class Server extends ServerService
 
     protected boolean logIn(String username, String password)
     {
-        if (username.equals("admin") && password.equals("admin"))
+        //if (username.equals("admin") && password.equals("admin"))
+        User user = database.getUserByUsername(username);
+        if (user != null)
         {
             return true;
         }

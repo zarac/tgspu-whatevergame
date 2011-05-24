@@ -44,11 +44,26 @@ public class Server
         else
             logger.error("Could not start server! :(");
 
+        setupDatabase();
+
         services = new ServerService[Service.COUNT];
         services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST);
         services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN);
         services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD);
         services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD);
+    }
+
+    public void setupDatabase()
+    {
+        // database connection
+        logger.debug("Connecting to database...");
+        String host = "195.178.232.7";
+        int port = 3306;
+        String username = "DA211T10C4062119";
+        String password = "4062119";
+        String databaseName = "da211t10c4062119";
+        MySqlDatabase database = new MySqlDatabase(host, port, username, password, databaseName);
+        database.connect();
     }
 
     /**
