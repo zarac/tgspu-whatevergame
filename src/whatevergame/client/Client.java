@@ -56,6 +56,8 @@ public class Client
     {
         services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, connection);
         services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, connection);
+        whatevergame.services.motd.client.Client motdClient = new whatevergame.services.motd.client.Client(Service.MOTD, connection);
+        services[Service.MOTD] = motdClient;
     }
 
     /**

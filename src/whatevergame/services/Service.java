@@ -17,12 +17,13 @@ abstract public class Service
 {
     // TODO : Javadoc or remove
     public final static int NO_SERVICE_ID = -1;
-    public final static int COUNT = 5;
+    public final static int COUNT = 6;
     public final static int LOGIN = 0;
     public final static int CHAT = 1;
     public final static int PEWPEW = 2;
     public final static int FIVEPAD = 3;
     public final static int TEST = 4;
+    public final static int MOTD = 5;
 
     /**
      * A logger, it's handy to have.
