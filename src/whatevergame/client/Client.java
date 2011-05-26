@@ -56,10 +56,14 @@ public class Client
     public void initServices()
     {
         services = new ClientService[Service.COUNT];
-        services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, this);
         services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, this);
-        services[Service.MOTD] = new whatevergame.services.motd.client.Client(Service.MOTD, this);
+        services[Service.CHAT] = new whatevergame.services.chat.client.Client(Service.CHAT, this);
+        services[Service.PEWPEW] = new whatevergame.services.pewpew.client.Client(Service.PEWPEW, this);
         services[Service.FIVEPAD] = new whatevergame.services.fivepad.client.Client(Service.FIVEPAD, this);
+        services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, this);
+        services[Service.MOTD] = new whatevergame.services.motd.client.Client(Service.MOTD, this);
+        services[Service.LOBBY] = new whatevergame.services.lobby.client.Client(Service.LOBBY, this);
+        services[Service.SCORE] = new whatevergame.services.score.client.Client(Service.SCORE, this);
     }
 
     /**
