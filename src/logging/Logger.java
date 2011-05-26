@@ -181,6 +181,6 @@ public class Logger
      */
     protected String getLogTag()
     {
-        return object.getClass().getName();
+        return object.getClass().getName() + " @ " + Integer.toHexString(object.hashCode());
     }
 }
