@@ -18,7 +18,7 @@ public class Client extends ClientService
     // TODO : Shouldn't need to cast
     public void receive(whatevergame.services.Content p_content)
     {
-        Content content = (Content)content;
+        Content content = (Content)p_content;
         logger.debug("Received content\n    [" + content + "]");
     }
 }
