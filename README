@@ -8,15 +8,6 @@ Authors
     Simon Landstedt
     Anders Wik
     Algot Unknown
-Kriterier
-    Många spelinstanser
-    Ett spel
-        Flera spela (VG)
-    Turordningsbaserat
-    Tydligt spelavslut med poängresultat
-    Möjlighet till returmatch (VG)
-    Tappat kommunikation
-    Tidigt avslut
 To do
     Thread safe / make sure we synchronize where proper
     Graceful shut down of client and server
@@ -28,3 +19,50 @@ Resources
         : http://www.roseindia.net/java/thread/index.shtml
             : http://www.roseindia.net/java/thread/life-cycle-of-threads.shtml
             : http://www.roseindia.net/java/thread/thread-creation.shtml
+Kriterier
+    Många spelinstanser
+    Ett spel
+        Flera spela (VG)
+    Turordningsbaserat
+    Tydligt spelavslut med poängresultat
+    Möjlighet till returmatch (VG)
+    Tappat kommunikation
+    Tidigt avslut
+    From the .pdf
+        Funktioner som ska implementeras av servern är följande: 
+            Servern ska minst ge följande service: 
+                Låta spelare registrera sig på spelservern (användarnamn, lösenord). Detta ska endast ske en gång per spelare.  
+                Medge inloggning respektive utloggning av spelare.  
+                Leverera highscorelista till spel. 
+                Leverera köinformation till spel, dvs spelare som väntar på att ett spel ska starta. 
+                Inloggad spelare ska kunna ställa sig i kö sig för att spela ett spel. 
+                Inloggad spelare ska kunna lämna kön för att spela ett spel 
+                Inloggad spelare ska kunna få personlig spelstatistik 
+            När antalet köande spelare för ett spel är tillräckligt i antal ska servern starta och administrera spelet. Servern ska kunna hantera många spel och spelare samtidigt. En lösning är att skapa en tråd för varje spelare som ansluter och troligen en tråd per spel som spelas. 
+            Spelarnas resultat av spel ska lagras i en databas. 
+        Funktioner som ska implementeras av klienten är följande: 
+            Användaren ska kunna logga in.
+            Efter inloggning ska klienten presentera aktuella spel. Presentationen kan bestå av en bild över spelet, spelets namn, aktuell kösituation och highscorelista. Highscorelistan bör kunna visa total highscore (alla spelare) och personlig highscore. 
+            Efter inloggning ska användaren kunna välja att spela ett spel. Klienten väntar efter detta val på att spelet ska starta. Kösituationen bör visas under väntan. Användaren ska kunna välja att lämna kön för att spela spelet. 
+            Användaren ska kunna logga ut. 
+        Krav på spelen i systemet: 
+            Det ska vara minst två spelbara spel i systemet. 
+            Spelen ska vara turordningsbaserade
+            Spelen ska ha ett tydligt avslut med poängresultat eller motsvarande för varje spelare. 
+            Det ska finnas möjlighet för spelarna att gå direkt till en ny omgång med samma deltagare. 
+        Dokumentation 
+            Följande dokument ska levereras den 29/5 i filen systemmanual.pdf: 
+            Systemmanual
+                Innehållsförteckning 
+                    Dokumentation av server-sidan omfattande: 
+                        Övergripande klassdiagram över klasserna på serversidan. 
+                        Beskrivning av klasserna avseende deras ansvar i systemet. 
+                        Källkod. Varje ny klass ska börja på ny sida. Ordna klasserna på lämpligt sätt. 
+                    Dokumentation av klient-sidan omfattande: 
+                        Övergripande klassdiagram. Samtliga klasser på klientsidan ska ingå. 
+                        Beskrivning av klasserna avseende deras ansvar i systemet. 
+                        Källkod. Varje ny klass ska börja på ny sida. Ordna klasserna på lämpligt sätt. 
+                    Dokumentation av vardera spel omfattande: 
+                        Övergripande klassdiagram. Samtliga klasser som i spelet ska ingå. 
+                        Beskrivning av klasserna avseende deras ansvar i spelet. 
+                        Källkod. Varje ny klass ska börja på ny sida. Ordna klasserna på lämpligt sätt. 
