@@ -8,9 +8,9 @@ import whatevergame.services.ServerService;
 
 public class Server extends ServerService
 {
-    public Server(int id)
+    public Server(int id, whatevergame.server.Server server)
     {
-        super(id);
+        super(id, server);
     }
 
     /**

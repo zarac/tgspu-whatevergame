@@ -1,7 +1,5 @@
 package whatevergame.services.login.client;
 
-import whatevergame.communication.Connection;
-
 import whatevergame.services.ClientService;
 
 import whatevergame.services.login.Content;
@@ -17,11 +15,11 @@ public class Client extends ClientService
     protected Gui gui;
 
     /**
-     * @see ClientService#ClientService(int,Connection)
+     * @see ClientService#ClientService(int,Client)
      */
-    public Client(int id, Connection connection)
+    public Client(int id, whatevergame.client.Client client)
     {
-        super(id, connection);
+        super(id, client);
 
         gui = new Gui(this);
     }

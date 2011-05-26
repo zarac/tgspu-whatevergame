@@ -16,7 +16,14 @@ import whatevergame.services.ServerService;
  */
 public class Server
 {
-    protected int port;
+    // Database settings
+    protected final int dbPort = 3306;
+    protected final String dbHost = "195.178.232.7";
+    protected final String dbUsername = "DA211T10C4062119";
+    protected final String dbPassword = "4062119";
+    protected final String dbDatabase = "da211t10c4062119";
+
+    protected int port = 3000;
     protected ConnectionCreator connectionCreator;
     // TODO : ? Use better data structure.
     protected LinkedList<Client> clients;
@@ -45,24 +52,22 @@ public class Server
             logger.error("Could not start server! :(");
 
         setupDatabase();
+        initServices();
+    }
 
+    public void initServices()
+    {
         services = new ServerService[Service.COUNT];
-        services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST);
-        services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN);
-        services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD);
-        services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD);
+        services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST, this);
+        services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN, this);
+        services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD, this);
+        services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD, this);
+        services[Service.LOBBY] = new whatevergame.services.lobby.server.Server(Service.LOBBY, this);
     }
 
     public void setupDatabase()
     {
-        // database connection
-        logger.debug("Connecting to database...");
-        String host = "195.178.232.7";
-        int port = 3306;
-        String username = "DA211T10C4062119";
-        String password = "4062119";
-        String databaseName = "da211t10c4062119";
-        MySqlDatabase database = new MySqlDatabase(host, port, username, password, databaseName);
+        MySqlDatabase database = new MySqlDatabase(dbHost, dbPort, dbUsername, dbPassword, dbDatabase);
         database.connect();
     }
 
@@ -96,11 +101,8 @@ public class Server
         logger.info("adding client '" + client + "'");
         clients.add(client);
 
-        // TODO : remove, just testing some..
-        logger.comment("adding client to test service and login service and MOTD service!");
-        services[Service.TEST].addClient(client);
-        services[Service.LOGIN].addClient(client);
+        // initial services for connected clients
         services[Service.MOTD].addClient(client);
-        services[Service.FIVEPAD].addClient(client);
+        services[Service.LOGIN].addClient(client);
     }
 }

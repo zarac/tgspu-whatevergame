@@ -9,6 +9,7 @@ import logging.Logger;
 
 import whatevergame.communication.Connection;
 
+import whatevergame.services.ClientService;
 import whatevergame.services.Service;
 
 /**
@@ -21,7 +22,7 @@ public class Client
 {
     // TODO : javadoc
     protected Connection connection;
-    protected Service[] services;
+    protected ClientService[] services;
     protected String serverIp;
     protected int serverPort;
     
@@ -40,12 +41,12 @@ public class Client
         serverPort = port;
 
         logger = new Logger(this);
-        services = new Service[Service.COUNT];
-        System.out.println("HELLO?");
+        //services = new ClientService[Service.COUNT];
         connection = new Connection();
-        System.out.println("HELLO!");
 
         initServices();
+
+        // depends on services being initialized
         connect();
     }
 
@@ -54,10 +55,11 @@ public class Client
      */
     public void initServices()
     {
-        services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, connection);
-        services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, connection);
-        services[Service.MOTD] = new whatevergame.services.motd.client.Client(Service.MOTD, connection);
-        services[Service.FIVEPAD] = new whatevergame.services.fivepad.client.Client(Service.FIVEPAD, connection);
+        services = new ClientService[Service.COUNT];
+        services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, this);
+        services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, this);
+        services[Service.MOTD] = new whatevergame.services.motd.client.Client(Service.MOTD, this);
+        services[Service.FIVEPAD] = new whatevergame.services.fivepad.client.Client(Service.FIVEPAD, this);
     }
 
     /**
@@ -87,5 +89,15 @@ public class Client
             logger.error("Could not create socket (" + e.getMessage() + ").");
             return false;
         }
+    }
+
+    /**
+     * Gets the connection for this instance.
+     *
+     * @return The connection.
+     */
+    public Connection getConnection()
+    {
+        return this.connection;
     }
 }

@@ -66,24 +66,23 @@ public class MySqlDatabase
 
     public void connect()
     {
-        logger.debug("connect()");
-
+        logger.debug("connect(): trying to connect to database");
         if (connection == null)
         {
             try
             {
                 connection = DriverManager.getConnection(url, username, password);
                 statement = connection.createStatement();
-                logger.info("connected to database");
+                logger.info("connect(): connected to database");
             }
             catch (SQLException e)
             {
-                logger.error("SQL ERROR : " + e.getMessage() + " : " + e.toString());
+                logger.error("connect(): SQL ERROR : " + e.getMessage() + " : " + e.toString());
             }
         }
         else
         {
-            logger.debug("already connected");
+            logger.debug("connect(): already connected");
         }
     }
 

@@ -21,9 +21,9 @@ public class Server extends ServerService
     /**
      * @see ServerService#ServerService(int,Connection)
      */
-    public Server(int id)
+    public Server(int id, whatevergame.server.Server server)
     {
-        super(id);
+        super(id, server);
 
         // database connection
         database = new Database();
@@ -34,23 +34,42 @@ public class Server extends ServerService
     public void receive(Client client, whatevergame.services.Content p_content)
     {
         Content content = (Content)p_content;
+
         logger.debug("LoginService received content\n    [" + content + "] from client\n    [" + client + "]");
 
+        String[] arguments;
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
-                String[] arguments = content.getArguments().split(":");
+                arguments = content.getArguments().split(":");
                 if (logIn(arguments[0], arguments[1]))
-                    send(client, new Content(Content.CMD_LOGIN, "Welcome, " + arguments[0] + "!"));
+                {
+                    send(client, new Content(Content.CMD_LOGIN, "success"));
+                    services[LOGIN].removeClient(client);
+                    services[LOBBY].addClient(client);
+                }
                 else
-                    send(client, new Content(Content.CMD_LOGIN, "access denied!"));
+                    send(client, new Content(Content.CMD_LOGIN, "fail"));
                 break;
+
             case (Content.CMD_LOGOUT):
-                send(client, new Content(Content.CMD_LOGOUT, "trying to log out, huh?"));
+                send(client, new Content(Content.CMD_LOGOUT, "fail"));
                 break;
+
             case (Content.CMD_REGISTER):
-                send(client, new Content(Content.CMD_REGISTER, "trying to register, huh?"));
+                arguments = content.getArguments().split(":");
+                if (database.getUserByUsername(arguments[0]) != null)
+                    send(client, new Content(Content.CMD_REGISTER, "fail:username_unavailable"));
+                else
+                {
+                    User user = database.addUser(arguments[0], arguments[1]);
+                    if (user == null)
+                        send(client, new Content(Content.CMD_REGISTER, "fail:unknown"));
+                    else
+                        send(client, new Content(Content.CMD_REGISTER, "success"));
+                }
                 break;
+
             default:
                 logger.warning("unknown command");
         }
@@ -64,7 +83,7 @@ public class Server extends ServerService
     {
         super.addClient(client);
         logger.info("client added\n    [" + client + "]");
-        send(client, new Content(Content.CMD_LOGIN, "Wellcome!"));
+        send(client, new Content(Content.CMD_LOGIN, "Welcome!"));
     }
 
     protected boolean logIn(String username, String password)

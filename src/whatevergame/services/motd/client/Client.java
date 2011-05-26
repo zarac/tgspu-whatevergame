@@ -1,16 +1,14 @@
 package whatevergame.services.motd.client;
 
-import whatevergame.communication.Connection;
-
 import whatevergame.services.ClientService;
 
 import whatevergame.services.motd.Content;
 
 public class Client extends ClientService
 {
-    public Client(int id, Connection connection)
+    public Client(int id, whatevergame.client.Client client)
     {
-        super(id, connection);
+        super(id, client);
     }
 
     /**

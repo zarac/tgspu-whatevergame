@@ -1,7 +1,5 @@
 package whatevergame.services.test.client;
 
-import whatevergame.communication.Connection;
-
 import whatevergame.services.ClientService;
 
 import whatevergame.services.test.Content;
@@ -16,11 +14,11 @@ public class Client extends ClientService
 {
     /**
      * {@inheritDoc}
-     * @see ClientService#Client(int,Connection)
+     * @see ClientService#Client(int,Client)
      */
-    public Client(int id, Connection connection)
+    public Client(int id, whatevergame.client.Client client)
     {
-        super(id, connection);
+        super(id, client);
     }
 
     // TODO : Shouldn't need to cast

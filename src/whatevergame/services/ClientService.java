@@ -1,5 +1,7 @@
 package whatevergame.services;
 
+import whatevergame.client.Client;
+
 import whatevergame.communication.Connection;
 
 /**
@@ -11,6 +13,11 @@ import whatevergame.communication.Connection;
 abstract public class ClientService extends Service
 {
     /**
+     * A reference to the main client.
+     */
+    protected Client client;
+
+    /**
      * The connection to the server.
      */
     protected Connection connection;
@@ -21,11 +28,12 @@ abstract public class ClientService extends Service
      * @param id The ID of the service.
      * @param connection The connection to the server.
      */
-    public ClientService(int id, Connection connection)
+    public ClientService(int id, Client client)
     {
         super(id);
 
-        this.connection = connection;
+        this.client = client;
+        this.connection = client.getConnection();
     }
 
     /**

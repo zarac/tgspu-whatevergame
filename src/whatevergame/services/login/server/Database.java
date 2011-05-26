@@ -7,17 +7,14 @@ import whatevergame.server.MySqlDatabase;
 
 public class Database extends MySqlDatabase
 {
+    // CREATE TABLE wgUser (id INT NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (id));
     protected String userTable = "wgUser";
 
     public User getUserByUsername(String p_username)
     {
         String query = "SELECT username,password FROM " + userTable + " WHERE username='" + p_username + "'";
         ResultSet resultSet = doSelect(query);
-
-        int numRows = getNumRows(resultSet);
-
-        // make new player
-        if (numRows == 0)
+        if (getNumRows(resultSet) == 0)
         {
             logger.warning("user not found '" + p_username + "'");
             return null;
@@ -43,13 +40,20 @@ public class Database extends MySqlDatabase
         }
     }
 
+    public User addUser(String username, String password)
+    {
+        logger.info("Registering user '" + username + "'");
+        doInsert("INSERT INTO " + userTable + "(username,password) VALUES('" + username + "', '" + password + "')");
+        return getUserByUsername(username);
+    }
+
     public void dumpUserTable()
     {
         logger.debug("dumpUserTable():");
-        String query = "SELECT * FROM " + userTable;
+        String query = "SELECT username, password FROM " + userTable;
 
         ResultSet resultSet = doSelect(query);
-        logger.info("dumpUserTable(): " + resultSet);
+        logger.debug("dumpUserTable(): " + resultSet);
 
         int numRows = getNumRows(resultSet);
 
@@ -59,7 +63,7 @@ public class Database extends MySqlDatabase
         {
             while (resultSet.next())
             {
-                logger.warning("resultSet.getString('username'): " + resultSet.getString("username"));
+                logger.debug("username=" + resultSet.getString("username") + " password=" + resultSet.getString("password"));
             }
         }
         catch (SQLException e)

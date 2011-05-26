@@ -19,9 +19,9 @@ public class Server extends ServerService
      * {@inheritDoc}
      * @see ServerService#Server(int)
      */
-    public Server(int id)
+    public Server(int id, whatevergame.server.Server server)
     {
-        super(id);
+        super(id, server);
     }
 
     /**

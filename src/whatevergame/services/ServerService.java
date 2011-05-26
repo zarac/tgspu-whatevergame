@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import whatevergame.communication.Connection;
 
 import whatevergame.server.Client;
+import whatevergame.server.Server;
 
 /**
  * The server side of a service should extend this.
@@ -14,6 +15,9 @@ import whatevergame.server.Client;
  */
 abstract public class ServerService extends Service
 {
+    protected Server server;
+    protected ServerService[] services;
+
     /**
      * The clients using this service.
      */
@@ -23,9 +27,11 @@ abstract public class ServerService extends Service
      * {@inheritDoc}
      * @see Service#ServerService(int)
      */
-    public ServerService(int id)
+    public ServerService(int id, Server server)
     {
         super(id);
+        this.server = server;
+        services = server.getServices();
         clients = new LinkedList<Client>();
     }
 
@@ -37,6 +43,16 @@ abstract public class ServerService extends Service
     public void addClient(Client client)
     {
         clients.add(client);
+    }
+
+    /**
+     * Removes a client from the service.
+     * 
+     * @param client The client to be removed.
+     */
+    public void removeClient(Client client)
+    {
+        clients.remove(client);
     }
 
     /**

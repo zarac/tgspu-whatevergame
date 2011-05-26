@@ -1,28 +1,34 @@
-package whatevergame.services.fivepad.client;
+package whatevergame.services.lobby.client;
 
 import whatevergame.services.ClientService;
 
-import whatevergame.services.fivepad.Content;
+import whatevergame.services.lobby.Content;
 
+/**
+ * The lobby client service.
+ * 
+ * @author Hannes Landstedt (hannes.landstedt@gmail.com)
+ * @version null
+ */
 public class Client extends ClientService
 {
+    protected Gui gui;
+
     /**
-     * {@inheritDoc}
-     * @see ClientService#Client(int,Client)
+     * @see ClientService#ClientService(int,Client)
      */
     public Client(int id, whatevergame.client.Client client)
     {
         super(id, client);
+
+        gui = new Gui(this);
     }
 
-    /**
-     * {@inheritDoc}
-     * @see ClientService#receive(Content)
-     */
     // TODO : Shouldn't need to cast.
     public void receive(whatevergame.services.Content p_content)
     {
         Content content = (Content)p_content;
-        logger.info(content.toString());
+
+        logger.debug("receive(" + content + "):");
     }
 }
