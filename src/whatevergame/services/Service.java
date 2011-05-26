@@ -17,7 +17,8 @@ abstract public class Service
 {
     // TODO : Javadoc or remove
     public final static int NO_SERVICE_ID = -1;
-    public final static int COUNT = 7;
+    public final static int COUNT = 8;
+
     public final static int LOGIN = 0;
     public final static int CHAT = 1;
     public final static int PEWPEW = 2;
@@ -25,6 +26,7 @@ abstract public class Service
     public final static int TEST = 4;
     public final static int MOTD = 5;
     public final static int LOBBY = 6;
+    public final static int SCORE = 7;
 
     /**
      * A logger, it's handy to have.

@@ -58,11 +58,14 @@ public class Server
     public void initServices()
     {
         services = new ServerService[Service.COUNT];
-        services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST, this);
         services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN, this);
-        services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD, this);
+        services[Service.CHAT] = new whatevergame.services.chat.server.Server(Service.CHAT, this);
+        services[Service.PEWPEW] = new whatevergame.services.pewpew.server.Server(Service.PEWPEW, this);
         services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD, this);
+        services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST, this);
+        services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD, this);
         services[Service.LOBBY] = new whatevergame.services.lobby.server.Server(Service.LOBBY, this);
+        services[Service.SCORE] = new whatevergame.services.score.server.Server(Service.SCORE, this);
     }
 
     public void setupDatabase()
@@ -104,5 +107,12 @@ public class Server
         // initial services for connected clients
         services[Service.MOTD].addClient(client);
         services[Service.LOGIN].addClient(client);
+    }
+
+    public void removeClient(Client client)
+    {
+        logger.debug("removed client '" + client + "'");
+        clients.remove(client);
+        // TODO : remove client from all services!
     }
 }

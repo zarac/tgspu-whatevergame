@@ -23,8 +23,10 @@ public class Server extends ServerService
      * {@inheritDoc}
      * @see ServerService#addClient(Client)
      */
-    //public void addClient(Client client)
-    //{
-        //super.addClient(client);
-    //}
+    public void addClient(Client client)
+    {
+        super.addClient(client);
+        services[CHAT].addClient(client);
+        services[SCORE].addClient(client);
+    }
 }
