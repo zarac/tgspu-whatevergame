@@ -1,5 +1,10 @@
 package whatevergame.services;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import whatevergame.client.Client;
 
 import whatevergame.communication.Connection;
@@ -69,5 +74,18 @@ abstract public class ClientService extends Service
      */
     public void disable()
     {
+    }
+
+    /**
+     * Get gui for service.
+     * TODO : ? abstract
+     * TODO : ? return abstract Gui class?
+     */
+    public JPanel getGui()
+    {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(new JLabel("NO GUI"));
+        return panel;
     }
 }

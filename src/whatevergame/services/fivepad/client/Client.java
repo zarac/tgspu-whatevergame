@@ -1,5 +1,10 @@
 package whatevergame.services.fivepad.client;
 
+import java.awt.GridLayout;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import whatevergame.services.ClientService;
 
 import whatevergame.services.fivepad.Content;
@@ -24,5 +29,13 @@ public class Client extends ClientService
     {
         Content content = (Content)p_content;
         logger.info(content.toString());
+    }
+
+    public JPanel getGui()
+    {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(1,1));
+        panel.add(new JLabel("GIVE PAD GUI"));
+        return panel;
     }
 }

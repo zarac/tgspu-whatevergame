@@ -24,12 +24,34 @@ public class Client extends ClientService
         gui = new Gui(this);
     }
 
+    public whatevergame.services.chat.client.Client getChat()
+    {
+        return (whatevergame.services.chat.client.Client)client.getService(CHAT);
+    }
+
+    public whatevergame.services.score.client.Client getScore()
+    {
+        logger.error("SCORE(" + SCORE +")=" + client.getService(SCORE));
+        return (whatevergame.services.score.client.Client)client.getService(SCORE);
+    }
+
+    public whatevergame.services.fivepad.client.Client getFivePad()
+    {
+        return (whatevergame.services.fivepad.client.Client)client.getService(FIVEPAD);
+    }
+
+    public whatevergame.services.pewpew.client.Client getPewPew()
+    {
+        return (whatevergame.services.pewpew.client.Client)client.getService(PEWPEW);
+    }
+
     /**
      * {@inheritDoc}
      * @see ClientService#enable()
      */
     public void enable()
     {
+        gui.init();
         gui.setVisible(true);
     }
 
