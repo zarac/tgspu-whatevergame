@@ -26,7 +26,7 @@ public class Server extends ServerService
     public void addClient(Client client)
     {
         super.addClient(client);
-        services[CHAT].addClient(client);
-        services[SCORE].addClient(client);
+        getService(CHAT).addClient(client);
+        getService(SCORE).addClient(client);
     }
 }

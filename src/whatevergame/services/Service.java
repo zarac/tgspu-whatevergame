@@ -66,4 +66,13 @@ abstract public class Service
     {
         return this.id;
     }
+
+    /**
+     * {@inheritDoc}
+     * @see Object#toString()
+     */
+    public String toString()
+    {
+        return "Service[id=" + id + "]";
+    }
 }

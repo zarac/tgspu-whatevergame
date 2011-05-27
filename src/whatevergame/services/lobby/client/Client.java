@@ -31,7 +31,6 @@ public class Client extends ClientService
 
     public whatevergame.services.score.client.Client getScore()
     {
-        logger.error("SCORE(" + SCORE +")=" + client.getService(SCORE));
         return (whatevergame.services.score.client.Client)client.getService(SCORE);
     }
 
@@ -73,5 +72,10 @@ public class Client extends ClientService
         Content content = (Content)p_content;
 
         logger.debug("receive(" + content + "):");
+    }
+
+    public Gui.BackToGameSelect getBackToGameSelectButton()
+    {
+        return gui.getBackToGameSelect();
     }
 }

@@ -2,16 +2,16 @@ package whatevergame.services.chat;
 
 public class Content extends whatevergame.services.Content
 {
-    protected String test;
+    protected String message;
 
     /**
      * Creates an instance of Content.
      * 
-     * @param test The test string
+     * @param message The message
      */
-    public Content(String test)
+    public Content(String message)
     {
-        this.test = test;
+        this.message = message;
     }
 
     /**
@@ -20,6 +20,16 @@ public class Content extends whatevergame.services.Content
      */
     public String toString()
     {
-        return test;
+        return message;
+    }
+
+    /**
+     * Gets the message for this instance.
+     *
+     * @return The message.
+     */
+    public String getMessage()
+    {
+        return this.message;
     }
 }

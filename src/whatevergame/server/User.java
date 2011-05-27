@@ -1,4 +1,4 @@
-package whatevergame.services.login.server;
+package whatevergame.server;
 
 public class User
 {
@@ -9,5 +9,15 @@ public class User
     {
         this.username = username;
         this.password = password;
+    }
+
+    /**
+     * Gets the username for this instance.
+     *
+     * @return The username.
+     */
+    public String getUsername()
+    {
+        return this.username;
     }
 }

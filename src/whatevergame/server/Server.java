@@ -6,6 +6,7 @@ import logging.Logger;
 
 import whatevergame.services.Service;
 import whatevergame.services.ServerService;
+import whatevergame.services.ServiceProvider;
 
 /**
  * The Whatever Game server.
@@ -27,7 +28,8 @@ public class Server
     protected ConnectionCreator connectionCreator;
     // TODO : ? Use better data structure.
     protected LinkedList<Client> clients;
-    protected ServerService[] services;
+    //protected ServerService[] services;
+    protected ServiceProvider services;
 
     /**
      * A logger, it's handy to have.
@@ -41,6 +43,7 @@ public class Server
         this.port = port;
         connectionCreator = new ConnectionCreator(this);
         clients = new LinkedList<Client>();
+        services = new ServiceProvider();
 
         if (connectionCreator.init())
         {
@@ -57,16 +60,29 @@ public class Server
 
     public void initServices()
     {
-        services = new ServerService[Service.COUNT];
-        services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN, this);
-        services[Service.CHAT] = new whatevergame.services.chat.server.Server(Service.CHAT, this);
-        services[Service.PEWPEW] = new whatevergame.services.pewpew.server.Server(Service.PEWPEW, this);
-        services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD, this);
-        services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST, this);
-        services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD, this);
-        services[Service.LOBBY] = new whatevergame.services.lobby.server.Server(Service.LOBBY, this);
-        services[Service.SCORE] = new whatevergame.services.score.server.Server(Service.SCORE, this);
+        services.init(Service.COUNT);
+        services.add(Service.LOGIN, new whatevergame.services.login.server.Server(Service.LOGIN, this));
+        services.add(Service.CHAT, new whatevergame.services.chat.server.Server(Service.CHAT, this));
+        services.add(Service.PEWPEW, new whatevergame.services.pewpew.server.Server(Service.PEWPEW, this));
+        services.add(Service.FIVEPAD, new whatevergame.services.fivepad.server.Server(Service.FIVEPAD, this));
+        services.add(Service.TEST, new whatevergame.services.test.server.Server(Service.TEST, this));
+        services.add(Service.MOTD, new whatevergame.services.motd.server.Server(Service.MOTD, this));
+        services.add(Service.LOBBY, new whatevergame.services.lobby.server.Server(Service.LOBBY, this));
+        services.add(Service.SCORE, new whatevergame.services.score.server.Server(Service.SCORE, this));
     }
+
+    //public void initServices()
+    //{
+        //services = new ServerService[Service.COUNT];
+        //services[Service.LOGIN] = new whatevergame.services.login.server.Server(Service.LOGIN, this);
+        //services[Service.CHAT] = new whatevergame.services.chat.server.Server(Service.CHAT, this);
+        //services[Service.PEWPEW] = new whatevergame.services.pewpew.server.Server(Service.PEWPEW, this);
+        //services[Service.FIVEPAD] = new whatevergame.services.fivepad.server.Server(Service.FIVEPAD, this);
+        //services[Service.TEST] = new whatevergame.services.test.server.Server(Service.TEST, this);
+        //services[Service.MOTD] = new whatevergame.services.motd.server.Server(Service.MOTD, this);
+        //services[Service.LOBBY] = new whatevergame.services.lobby.server.Server(Service.LOBBY, this);
+        //services[Service.SCORE] = new whatevergame.services.score.server.Server(Service.SCORE, this);
+    //}
 
     public void setupDatabase()
     {
@@ -85,13 +101,13 @@ public class Server
     }
 
     /**
-     * Gets the services for this instance.
+     * Gets the service provider for this instance.
      *
-     * @return The services.
+     * @return The service provider.
      */
-    public ServerService[] getServices()
+    public ServiceProvider getServices()
     {
-        return this.services;
+        return services;
     }
 
     /**
@@ -105,8 +121,8 @@ public class Server
         clients.add(client);
 
         // initial services for connected clients
-        services[Service.MOTD].addClient(client);
-        services[Service.LOGIN].addClient(client);
+        ((ServerService)services.get(Service.MOTD)).addClient(client);
+        ((ServerService)services.get(Service.LOGIN)).addClient(client);
     }
 
     public void removeClient(Client client)

@@ -4,6 +4,8 @@ import whatevergame.services.ClientService;
 
 import whatevergame.services.login.Content;
 
+import whatevergame.services.ServiceProvider;
+
 /**
  * The login client service.
  * 
@@ -54,10 +56,10 @@ public class Client extends ClientService
             case (Content.CMD_LOGIN):
                 if (content.argument.equals("success"))
                 {
-                    ClientService[] services = client.getServices();
+                    ServiceProvider services = client.getServices();
                     logger.debug("logged in successfully");
-                    services[LOGIN].disable();
-                    services[LOBBY].enable();
+                    ((ClientService)services.get(LOGIN)).disable();
+                    ((ClientService)services.get(LOBBY)).enable();
                 }
                 break;
             case (Content.CMD_LOGOUT):

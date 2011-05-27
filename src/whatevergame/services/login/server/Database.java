@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import whatevergame.server.MySqlDatabase;
+import whatevergame.server.User;
 
 public class Database extends MySqlDatabase
 {

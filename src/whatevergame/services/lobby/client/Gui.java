@@ -5,28 +5,37 @@ import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import java.awt.GridLayout;
-import java.awt.Insets;
+import java.awt.Image;
 import java.awt.Toolkit;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import whatevergame.services.Service;
 
 @SuppressWarnings("serial")
 public class Gui extends JFrame implements WindowListener
 {
     protected Client client;
 
-    protected whatevergame.services.pewpew.client.Client pewPew;
-    protected whatevergame.services.fivepad.client.Client fivePad;
+    protected JPanel mainPanel;
 
-    protected Game game;
+    protected GameSelector gameSelector;
+    protected JPanel gameBox;
     protected Chat chat;
     protected HighScore highScore;
+    protected BackToGameSelect backToGameSelect;
+
+    protected Dimension dimension;
 
     public Gui(Client client)
     {
@@ -34,42 +43,59 @@ public class Gui extends JFrame implements WindowListener
 
         setTitle("Whatever Game");
         setVisible(false);
+        setLayout(new GridLayout(1,1));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(this);
+        dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
-        game = new Game();
+        mainPanel = new JPanel();
+        gameSelector = new GameSelector();
+        gameBox = new JPanel();
         chat = new Chat();
         highScore = new HighScore();
+        backToGameSelect = new BackToGameSelect();
+
+        add(mainPanel);
     }
 
     public void playPewPew()
     {
-        game.selectGame(client.getPewPew().getGui());
+        gameBox.removeAll();
+        client.getService(Service.PEWPEW).enable();
+        client.getService(Service.PEWPEW).getGui().revalidate();
+        gameBox.add(client.getService(Service.PEWPEW).getGui());
+        gameBox.revalidate();
     }
 
     public void playFivePad()
     {
-        game.selectGame(client.getFivePad().getGui());
+        gameBox.removeAll();
+        client.getService(Service.FIVEPAD).enable();
+        client.getService(Service.FIVEPAD).getGui().revalidate();
+        gameBox.add(client.getService(Service.FIVEPAD).getGui());
+        gameBox.revalidate();
     }
 
     public void selectGame()
     {
-        game.selectGame();
+        client.getService(Service.PEWPEW).disable();
+        client.getService(Service.FIVEPAD).disable();
+        gameBox.removeAll();
+        gameSelector.revalidate();
+        gameBox.add(gameSelector);
+        gameBox.revalidate();
     }
 
     protected void init()
     {
-        // TODO : why is frame empty when using removeAll(): ?
-        // we need to empty frame when we init.. how to?
-        //removeAll();
-
-        setLayout(new GridLayout(1,2));
-
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(dimension.width/4, dimension.height/4, dimension.width/2, dimension.height/2);
 
-        game.init();
-        add(game);
+        mainPanel.removeAll();
+
+        mainPanel.setLayout(new GridLayout(1,2));
+
+        selectGame();
+        mainPanel.add(gameBox);
 
         JPanel right = new JPanel();
         right.setLayout(new GridLayout(2,1));
@@ -81,30 +107,9 @@ public class Gui extends JFrame implements WindowListener
         right.add(highScore);
 
         right.revalidate();
-        add(right);
-    }
+        mainPanel.add(right);
 
-    protected void init2()
-    {
-        setLayout(null);
-        Insets insets = getContentPane().getInsets();
-
-        removeAll();
-
-        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(dimension.width/4, dimension.height/4, dimension.width/2, dimension.height/2);
-
-        game.setBounds(0 + insets.left, 0, dimension.width/2 + insets.top, dimension.height);
-        add(game);
-        game.revalidate();
-
-        chat.setBounds(dimension.width/2 + insets.left, 0 + insets.top, dimension.width, dimension.height/2);
-        add(chat);
-        chat.revalidate();
-
-        highScore.setBounds(dimension.width/2 + insets.left, dimension.height/2 + insets.top, dimension.width, dimension.height);
-        add(highScore);
-        highScore.revalidate();
+        mainPanel.revalidate();
     }
 
     /**
@@ -113,6 +118,7 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowOpened(WindowEvent e)
     {
+        // pass
     }
 
     /**
@@ -130,6 +136,7 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowClosed(WindowEvent e)
     {
+        // pass
     }
 
     /**
@@ -138,6 +145,7 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowIconified(WindowEvent e)
     {
+        // pass
     }
 
     /**
@@ -146,6 +154,7 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowDeiconified(WindowEvent e)
     {
+        // pass
     }
 
     /**
@@ -154,6 +163,7 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowActivated(WindowEvent e)
     {
+        // pass
     }
 
     /**
@@ -162,81 +172,17 @@ public class Gui extends JFrame implements WindowListener
      */
     public void windowDeactivated(WindowEvent e)
     {
+        // pass
     }
 
-    protected class Game extends JPanel
+    /**
+     * Gets the backToGameSelect for this instance.
+     *
+     * @return The backToGameSelect.
+     */
+    public BackToGameSelect getBackToGameSelect()
     {
-        protected GameSelector gameSelector;
-
-        protected Game()
-        {
-            gameSelector = new GameSelector();
-        }
-
-        protected void init()
-        {
-            selectGame();
-            revalidate();
-        }
-
-        public void selectGame(JPanel panel)
-        {
-            removeAll();
-            add(panel);
-            revalidate();
-        }
-
-        public void selectGame()
-        {
-            selectGame(gameSelector);
-        }
-
-        protected class GameSelector extends JPanel
-        {
-            protected GameSelector()
-            {
-                setLayout(new GridLayout(2,1));
-                add(new SelectPewPew());
-                add(new SelectFivePad());
-            }
-
-            protected class SelectFivePad extends JButton implements ActionListener
-            {
-                protected SelectFivePad()
-                {
-                    setText("FIVE PAD");
-                    addActionListener(this);
-                }
-
-                /**
-                 * {@inheritDoc}
-                 * @see ActionListener#actionPerformed(ActionEvent)
-                 */
-                public void actionPerformed(ActionEvent e)
-                {
-                    playFivePad();
-                }
-            }
-
-            protected class SelectPewPew extends JButton implements ActionListener
-            {
-                protected SelectPewPew()
-                {
-                    setText("PEW PEW!");
-                    addActionListener(this);
-                }
-
-                /**
-                 * {@inheritDoc}
-                 * @see ActionListener#actionPerformed(ActionEvent)
-                 */
-                public void actionPerformed(ActionEvent e)
-                {
-                    playPewPew();
-                }
-            }
-        }
-
+        return this.backToGameSelect;
     }
 
     protected class Chat extends JPanel
@@ -257,5 +203,183 @@ public class Gui extends JFrame implements WindowListener
             add(client.getScore().getGui());
             revalidate();
         }
+    }
+
+    // TODO : use something else than JButton
+    protected class PlayFivePad extends JButton implements MouseListener
+    {
+        protected final static String iconPath = "data/images/logo5pad.jpg";
+
+        protected PlayFivePad()
+        {
+            int width = dimension.width/4;
+            int height = dimension.height/4;
+            //setBounds(0, height/2, width, height);
+            setPreferredSize(new Dimension(width, height));
+
+            addMouseListener(this);
+            // TODO : Shouldn't be hard coded
+            //setIconImage(getScaledImage(iconPath, width, height));
+            setIcon(new ImageIcon(getScaledImage(iconPath, width, height)));
+            add(new JLabel("Five Pad"));
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseClicked(MouseEvent)
+         */
+        public void mouseClicked(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mousePressed(MouseEvent)
+         */
+        public void mousePressed(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseReleased(MouseEvent)
+         */
+        public void mouseReleased(MouseEvent e)
+        {
+            playFivePad();
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseEntered(MouseEvent)
+         */
+        public void mouseEntered(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseExited(MouseEvent)
+         */
+        public void mouseExited(MouseEvent e)
+        {
+            // pass
+        }
+    }
+
+    protected class PlayPewPew extends JButton implements MouseListener
+    {
+        protected final static String iconPath = "data/images/logoPewWep.jpg";
+
+        protected PlayPewPew()
+        {
+            int width = dimension.width/4;
+            int height = dimension.height/4;
+            new logging.Logger(this).debug("width=" + width + ", height=" + height);
+            setPreferredSize(new Dimension(width, height));
+            //setBounds(0, 0, width, height);
+
+            //setText("PEW PEW!");
+            addMouseListener(this);
+            // TODO : Shouldn't be hard coded
+            setIcon(new ImageIcon(getScaledImage(iconPath, width, height)));
+            //setIconImage(getScaledImage(iconPath, width, height));
+            add(new JLabel("Pew Wep"));
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see ActionListener#actionPerformed(ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseClicked(MouseEvent)
+         */
+        public void mouseClicked(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mousePressed(MouseEvent)
+         */
+        public void mousePressed(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseReleased(MouseEvent)
+         */
+        public void mouseReleased(MouseEvent e)
+        {
+            playPewPew();
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseEntered(MouseEvent)
+         */
+        public void mouseEntered(MouseEvent e)
+        {
+            // pass
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see MouseListener#mouseExited(MouseEvent)
+         */
+        public void mouseExited(MouseEvent e)
+        {
+            // pass
+        }
+    }
+
+    protected class GameSelector extends JPanel
+    {
+        protected GameSelector()
+        {
+            setLayout(new GridLayout(2,1));
+            add(new PlayPewPew());
+            add(new PlayFivePad());
+        }
+    }
+
+    protected class BackToGameSelect extends JButton implements ActionListener
+    {
+        public BackToGameSelect()
+        {
+            setText("Back to game selection");
+            addActionListener(this);
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see ActionListener#actionPerformed(ActionEvent)
+         */
+        public void actionPerformed(ActionEvent e)
+        {
+            selectGame();
+        }
+    }
+
+    protected Image getScaledImage(String p_imagePath, int width, int height)
+    {
+        // TODO : check if image exists
+        Image image = new ImageIcon(p_imagePath).getImage();
+
+        image = image.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+
+        return image;
     }
 }

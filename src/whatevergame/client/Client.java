@@ -25,6 +25,7 @@ import whatevergame.communication.Connection;
 
 import whatevergame.services.ClientService;
 import whatevergame.services.Service;
+import whatevergame.services.ServiceProvider;
 
 /**
  * The client version of Whatever Game.
@@ -36,7 +37,7 @@ public class Client
 {
     // TODO : javadoc
     protected Connection connection;
-    protected ClientService[] services;
+    protected ServiceProvider services;
     protected String serverIp;
     protected int serverPort;
     protected ServerConnector serverConnector;
@@ -57,6 +58,8 @@ public class Client
 
         logger = new Logger(this);
 
+        services = new ServiceProvider();
+
         initServices();
 
         connection = new Connection();
@@ -66,28 +69,18 @@ public class Client
 
     /**
      * Initializes the services.
-     * TODO : Should be disabled by default.
      */
     public void initServices()
     {
-        services = new ClientService[Service.COUNT];
-        services[Service.LOGIN] = new whatevergame.services.login.client.Client(Service.LOGIN, this);
-        services[Service.CHAT] = new whatevergame.services.chat.client.Client(Service.CHAT, this);
-        services[Service.PEWPEW] = new whatevergame.services.pewpew.client.Client(Service.PEWPEW, this);
-        services[Service.FIVEPAD] = new whatevergame.services.fivepad.client.Client(Service.FIVEPAD, this);
-        services[Service.TEST] = new whatevergame.services.test.client.Client(Service.TEST, this);
-        services[Service.MOTD] = new whatevergame.services.motd.client.Client(Service.MOTD, this);
-        services[Service.LOBBY] = new whatevergame.services.lobby.client.Client(Service.LOBBY, this);
-        services[Service.SCORE] = new whatevergame.services.score.client.Client(Service.SCORE, this);
-    }
-
-    /**
-     * Enable services.
-     * Depends on being connected.
-     */
-    public void enableServices()
-    {
-        services[Service.LOGIN].enable();
+        services.init(Service.COUNT);
+        services.add(Service.LOGIN, new whatevergame.services.login.client.Client(Service.LOGIN, this));
+        services.add(Service.CHAT, new whatevergame.services.chat.client.Client(Service.CHAT, this));
+        services.add(Service.PEWPEW, new whatevergame.services.pewpew.client.Client(Service.PEWPEW, this));
+        services.add(Service.FIVEPAD, new whatevergame.services.fivepad.client.Client(Service.FIVEPAD, this));
+        services.add(Service.TEST, new whatevergame.services.test.client.Client(Service.TEST, this));
+        services.add(Service.MOTD, new whatevergame.services.motd.client.Client(Service.MOTD, this));
+        services.add(Service.LOBBY, new whatevergame.services.lobby.client.Client(Service.LOBBY, this));
+        services.add(Service.SCORE, new whatevergame.services.score.client.Client(Service.SCORE, this));
     }
 
     /**
@@ -135,9 +128,9 @@ public class Client
      *
      * @return The services.
      */
-    public ClientService[] getServices()
+    public ServiceProvider getServices()
     {
-        return this.services;
+        return services;
     }
 
     /**
@@ -148,9 +141,10 @@ public class Client
      */
     public ClientService getService(int index)
     {
-        return this.services[index];
+        return (ClientService)services.get(index);
     }
 
+    @SuppressWarnings("serial")
     protected class ServerConnector extends JFrame
     {
         protected Host host;
@@ -180,8 +174,9 @@ public class Client
             add(port);
             add(connect);
 
-            // TODO : This shouldn't be needed, but java is inconsistant which
-            // randomly causes a blank frame. Perhaps this will prevent it.
+            // TODO : This shouldn't be needed, but it seems java is
+            // inconsistant which randomly causes a blank frame. Perhaps this
+            // will prevent it.
             feedback.revalidate();
             host.revalidate();
             port.revalidate();
@@ -225,7 +220,7 @@ public class Client
                     feedback.set("Connected! =D", Feedback.SUCCESS);
                     //ServerConnector.this.setVisible(false);
                     ServerConnector.this.dispose();
-                    enableServices();
+                    ((ClientService)services.get(Service.LOGIN)).enable();
                 }
                 else
                 {

@@ -9,6 +9,7 @@ import logging.Logger;
 
 import whatevergame.services.Package;
 import whatevergame.services.Service;
+import whatevergame.services.ServiceProvider;
 
 /**
  * Used for communicating of the internets. ; )
@@ -24,7 +25,7 @@ public class Connection
     protected Receiver receiver;
     protected Socket socket;
     protected int sessionId;
-    protected Service[] services;
+    protected ServiceProvider services;
 
     /**
      * A logger, it's handy to have.
@@ -46,11 +47,9 @@ public class Connection
      * @param socket The socket used for communication.
      * @param sessionId A session identification number.
      */
-    public Connection(Service[] services, Socket socket, int sessionId)
+    public Connection(ServiceProvider services, Socket socket, int sessionId)
     {
         logger = new Logger(this);
-        System.out.println("Connection(...): logger = " + logger);
-
         init(services, socket, sessionId);
     }
 
@@ -61,7 +60,7 @@ public class Connection
      * @param socket The socket used for communication.
      * @param sessionId A session identification number.
      */
-    public void init(Service[] services, Socket socket, int sessionId)
+    public void init(ServiceProvider services, Socket socket, int sessionId)
     {
         this.services = services;
         this.socket = socket;
@@ -136,24 +135,13 @@ public class Connection
     }
 
     /**
-     * Gets the services for this instance.
+     * Gets the service provider for this instance.
      *
-     * @return The services.
+     * @return The services provider.
      */
-    public Service[] getServices()
+    public ServiceProvider getServices()
     {
         return this.services;
-    }
-
-    /**
-     * Gets the services for this instance.
-     *
-     * @param index The index to get.
-     * @return The services.
-     */
-    public Service getServices(int index)
-    {
-        return this.services[index];
     }
 
     /**

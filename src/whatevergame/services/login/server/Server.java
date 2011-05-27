@@ -3,6 +3,7 @@ package whatevergame.services.login.server;
 import whatevergame.communication.Connection;
 
 import whatevergame.server.Client;
+import whatevergame.server.User;
 
 import whatevergame.services.ServerService;
 
@@ -30,26 +31,28 @@ public class Server extends ServerService
         database.dumpUserTable();
     }
 
-    // TODO : Shouldn't need to cast.
     public void receive(Client client, whatevergame.services.Content p_content)
     {
         Content content = (Content)p_content;
 
         logger.debug("LoginService received content\n    [" + content + "] from client\n    [" + client + "]");
 
+        User user;
         String[] argument;
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
                 argument = content.getArgument().split(":");
-                if (logIn(argument[0], argument[1]))
-                {
-                    send(client, new Content(Content.CMD_LOGIN, "success"));
-                    services[LOGIN].removeClient(client);
-                    services[LOBBY].addClient(client);
-                }
-                else
+                user = logIn(argument[0], argument[1]);
+                if (user == null)
                     send(client, new Content(Content.CMD_LOGIN, "fail"));
+                else
+                {
+                    client.setUser(user);
+                    send(client, new Content(Content.CMD_LOGIN, "success"));
+                    getService(LOGIN).removeClient(client);
+                    getService(LOBBY).addClient(client);
+                }
                 break;
 
             case (Content.CMD_LOGOUT):
@@ -62,7 +65,7 @@ public class Server extends ServerService
                     send(client, new Content(Content.CMD_REGISTER, "fail:username_unavailable"));
                 else
                 {
-                    User user = database.addUser(argument[0], argument[1]);
+                    user = database.addUser(argument[0], argument[1]);
                     if (user == null)
                         send(client, new Content(Content.CMD_REGISTER, "fail:unknown"));
                     else
@@ -86,15 +89,8 @@ public class Server extends ServerService
         send(client, new Content(Content.CMD_LOGIN, "Welcome!"));
     }
 
-    protected boolean logIn(String username, String password)
+    protected User logIn(String username, String password)
     {
-        //if (username.equals("admin") && password.equals("admin"))
-        User user = database.getUserByUsername(username);
-        if (user != null)
-        {
-            return true;
-        }
-        else
-            return false;
+        return database.getUserByUsername(username);
     }
 }

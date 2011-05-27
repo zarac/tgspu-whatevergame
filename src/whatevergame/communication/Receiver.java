@@ -10,6 +10,7 @@ import logging.Logger;
 
 import whatevergame.services.Package;
 import whatevergame.services.Service;
+import whatevergame.services.ServiceProvider;
 
 /**
  * Waits for incoming packages on a stream and directs them to belonging service.
@@ -37,7 +38,7 @@ public class Receiver extends Thread
     /**
      * The services, used to route package.
      */
-    protected Service[] services;
+    protected ServiceProvider services;
 
     /**
      * A logger, it's handy to have.
@@ -90,15 +91,10 @@ public class Receiver extends Thread
             try
             {
                 Package _package = (Package)ois.readObject();
-
-                logger.debug("Received package\n    [" + _package + "]");
-                logger.debug("Sending to service\n    [" + _package.getServiceId() + "]");
-                dumpServices();
-                logger.debug("service=" + services[_package.getServiceId()]);
+                logger.debug("received package\n    [" + _package + "]");
+                logger.debug("routing to service: " + services.get(_package.getServiceId()));
                 // TODO : Should add to buffer!
-                //services[_package.getServiceId()].receivePackage(_package);
-                services[_package.getServiceId()].receivePackage(connection, _package);
-                logger.debug("HEEELLLOO?");
+                services.get(_package.getServiceId()).receivePackage(connection, _package);
             }
             catch (IOException e)
             {
@@ -112,27 +108,6 @@ public class Receiver extends Thread
                 logger.error("Deactivating!");
                 active = false;
             }
-        }
-    }
-
-    /**
-     * Dumps all services to logger.
-     */
-    public void dumpServices()
-    {
-        if (services == null)
-        {
-            logger.debug("no services!");
-            return;
-        }
-
-        logger.debug("services:");
-        for (Service service : services)
-        {
-            if (service != null)
-                logger.debug(service.toString());
-            else
-                logger.debug("NULL");
         }
     }
 }

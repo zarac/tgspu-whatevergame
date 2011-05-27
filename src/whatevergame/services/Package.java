@@ -59,6 +59,6 @@ public class Package implements Serializable
      */
     public String toString()
     {
-        return "Package: serviceId='" + serviceId + "', Content='" + content.toString();
+        return "Package[serviceId='" + serviceId + "', Content='" + content.toString() + "]";
     }
 }

@@ -16,7 +16,7 @@ import whatevergame.server.Server;
 abstract public class ServerService extends Service
 {
     protected Server server;
-    protected ServerService[] services;
+    protected ServiceProvider services;
 
     /**
      * The clients using this service.
@@ -73,4 +73,9 @@ abstract public class ServerService extends Service
     }
 
     abstract public void receive(Client client, Content content);
+
+    public ServerService getService(int id)
+    {
+        return (ServerService)server.getServices().get(id);
+    }
 }

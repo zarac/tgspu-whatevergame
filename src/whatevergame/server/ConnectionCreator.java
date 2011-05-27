@@ -73,13 +73,8 @@ public class ConnectionCreator extends Thread
             try
             {
                 Socket socket = serverSocket.accept();
-                logger.info("Accepted socket.");
-                //Connection connection = new Connection(server.getServices(), socket, nextSessionId++);
+                logger.info("accepted socket, creating client");
                 Client client = new Client(server.getServices(), socket, nextSessionId++);
-                client.connect();
-                //logger.info("Created connection '" + connection + "'.");
-                //Client client = new Client(connection);
-                //logger.info("Created client '" + client + "'.");
                 server.addClient(client);
             }
             catch (IOException e)

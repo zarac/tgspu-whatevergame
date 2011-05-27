@@ -13,44 +13,44 @@ import java.util.Calendar;
 public class Logger
 {
     /**
-     * The log level.
-     */
-    protected final static int LOG_LEVEL = 5;
-
-    /**
      * Debug log level.
      */
-    protected final static int LEVEL_DEBUG = 5;
+    public final static int LEVEL_DEBUG = 6;
+
+    /**
+     * Log nothing.
+     */
+    public final static int LEVEL_START = 5;
 
     /**
      * Informaion log level.
      */
-    protected final static int LEVEL_INFO = 4;
+    public final static int LEVEL_INFO = 4;
 
     /**
      * Comment log level.
      */
-    protected final static int LEVEL_COMMENT = 3;
+    public final static int LEVEL_COMMENT = 3;
 
     /**
      * Warning log level.
      */
-    protected final static int LEVEL_WARNING = 2;
+    public final static int LEVEL_WARNING = 2;
 
     /**
      * Error log level.
      */
-    protected final static int LEVEL_ERROR = 1;
+    public final static int LEVEL_ERROR = 1;
 
     /**
      * Log nothing.
      */
-    protected final static int LEVEL_START = 0;
+    public final static int LEVEL_OFF = 0;
 
     /**
-     * Log nothing.
+     * The log level.
      */
-    protected final static int LEVEL_OFF = -1;
+    protected static int logLevel = LEVEL_WARNING;
 
     /**
      * Date format.
@@ -139,17 +139,17 @@ public class Logger
     protected void log(int level, String message)
     {
         // Log to stdout
-        if (     LEVEL_START   == level && LOG_LEVEL >= level)
-            logToConsole("START  ", message);
-        else if (LEVEL_ERROR   == level && LOG_LEVEL >= level)
+        if (     LEVEL_ERROR   == level && logLevel >= level)
             logToConsole("ERROR  ", message);
-        else if (LEVEL_WARNING == level && LOG_LEVEL >= level)
+        else if (LEVEL_WARNING == level && logLevel >= level)
             logToConsole("WARNING", message);
-        else if (LEVEL_COMMENT == level && LOG_LEVEL >= level)
+        else if (LEVEL_COMMENT == level && logLevel >= level)
             logToConsole("COMMENT", message);
-        else if (LEVEL_INFO    == level && LOG_LEVEL >= level)
+        else if (LEVEL_INFO    == level && logLevel >= level)
             logToConsole("INFO   ", message);
-        else if (LEVEL_DEBUG   == level && LOG_LEVEL >= level)
+        else if (LEVEL_START   == level && logLevel >= level)
+            logToConsole("START  ", message);
+        else if (LEVEL_DEBUG   == level && logLevel >= level)
             logToConsole("DEBUG  ", message);
     }
 
@@ -182,5 +182,25 @@ public class Logger
     protected String getLogTag()
     {
         return object.getClass().getName() + " @ " + Integer.toHexString(object.hashCode());
+    }
+
+    /**
+     * Gets the logLevel for this instance.
+     *
+     * @return The logLevel.
+     */
+    static public int getLogLevel()
+    {
+        return logLevel;
+    }
+
+    /**
+     * Sets the logLevel for this instance.
+     *
+     * @param logLevel The logLevel.
+     */
+    static public void setLogLevel(int p_logLevel)
+    {
+        logLevel = p_logLevel;
     }
 }

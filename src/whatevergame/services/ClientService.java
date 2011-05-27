@@ -88,4 +88,9 @@ abstract public class ClientService extends Service
         panel.add(new JLabel("NO GUI"));
         return panel;
     }
+
+    public ClientService getService(int id)
+    {
+        return (ClientService)client.getServices().get(id);
+    }
 }
