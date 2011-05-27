@@ -96,6 +96,7 @@ public class Client
         try
         {
             //connection = new Connection(services, new Socket(serverIp, serverPort), -1);
+            logger.debug("services=" + services);
             connection.init(services, new Socket(host, port), -1);
             connection.connect();
             logger.info("connected to '" + host + ":" + port + "'");
