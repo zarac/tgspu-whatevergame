@@ -8,12 +8,12 @@ public class Content extends whatevergame.services.Content
 
     protected int command;
     // TODO : ? extend this Content and cast depending on command
-    protected String arguments;
+    public String argument;
 
-    public Content(int command, String arguments)
+    public Content(int command, String argument)
     {
         this.command = command;
-        this.arguments = arguments;
+        this.argument = argument;
     }
 
     /**
@@ -27,17 +27,17 @@ public class Content extends whatevergame.services.Content
     }
 
     /**
-     * Gets the arguments for this instance.
+     * Gets the argument for this instance.
      *
-     * @return The arguments.
+     * @return The argument.
      */
-    public String getArguments()
+    public String getArgument()
     {
-        return this.arguments;
+        return this.argument;
     }
 
     public String toString()
     {
-        return "command='" + command + "', arguments='" + arguments + "'";
+        return "command='" + command + "', argument='" + argument + "'";
     }
 }

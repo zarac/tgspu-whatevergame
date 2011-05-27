@@ -2,6 +2,7 @@ package whatevergame.services.login.client;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -29,25 +31,28 @@ public class Gui extends JFrame
     protected Password password;
     protected LogInButton logIn;
     protected RegisterButton register;
+    protected Feedback feedback;
 
 
     public Gui(Client client)
     {
         this.client = client;
 
-        setTitle("Authentication Plz Kthx");
-        setVisible(true);
+        setTitle("Whatever Game - Login");
+        //setUndecorated(true);
+        setVisible(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setBounds(100, 100, 300, 300);
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(dimension.width/4, dimension.height/4, dimension.width/2, dimension.height/2);
 
         username = new Username();
         password = new Password();
         logIn = new LogInButton();
         register = new RegisterButton();
+        feedback = new Feedback("Welcome, please log in!");
         container = new Container();
         add(container, BorderLayout.CENTER);
-
         container.revalidate();
     }
     
@@ -56,10 +61,8 @@ public class Gui extends JFrame
         public Container()
         {
             setLayout(new GridLayout(5,1));
-            setBackground(new Color(140, 230, 42));
-            setBackground(new Color(140, 230, 42));
 
-            add(new JLabel("Hi there, welcome!"));
+            add(feedback);
             add(username);
             add(password);
             add(logIn);
@@ -107,8 +110,8 @@ public class Gui extends JFrame
     {
         public Username()
         {
+            setHorizontalAlignment(CENTER);
             setText(DEFAULT_USERNAME);
-            setOpaque(false);
             addMouseListener(this);
         }
 
@@ -164,8 +167,8 @@ public class Gui extends JFrame
     {
         public Password()
         {
+            setHorizontalAlignment(CENTER);
             setText(DEFAULT_PASSWORD);
-            setOpaque(false);
             addMouseListener(this);
         }
 
@@ -213,6 +216,46 @@ public class Gui extends JFrame
         {
             if (password.getText().equals(""))
                 setText(DEFAULT_PASSWORD);
+        }
+    }
+
+    protected class Feedback extends JLabel
+    {
+        public final static int NORMAL = 0;
+        public final static int ERROR = 1;
+        public final static int SUCCESS = 2;
+
+        public Feedback(String text)
+        {
+            setHorizontalAlignment(CENTER);
+            setText(text);
+        }
+
+        public void set(String text)
+        {
+            set(text, 0);
+        }
+
+        public void set(String text, int type)
+        {
+            if (type == NORMAL)
+                setForeground(Color.BLACK);
+            else if (type == ERROR)
+                setForeground(Color.RED);
+            else if (type == SUCCESS)
+                setForeground(Color.GREEN);
+
+            setText(text);
+        }
+
+        public void add(String text)
+        {
+            setText(getText() + "\n" + text);
+        }
+
+        public void clear()
+        {
+            setText("");
         }
     }
 }

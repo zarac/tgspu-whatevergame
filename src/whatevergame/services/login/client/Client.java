@@ -24,6 +24,24 @@ public class Client extends ClientService
         gui = new Gui(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * @see ClientService#enable()
+     */
+    public void enable()
+    {
+        gui.setVisible(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see ClientService#disable()
+     */
+    public void disable()
+    {
+        gui.setVisible(false);
+    }
+
     // TODO : Shouldn't need to cast.
     public void receive(whatevergame.services.Content p_content)
     {
@@ -34,7 +52,13 @@ public class Client extends ClientService
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
-                logger.debug("did i log in?");
+                if (content.argument.equals("success"))
+                {
+                    ClientService[] services = client.getServices();
+                    logger.debug("logged in successfully");
+                    services[LOGIN].disable();
+                    services[LOBBY].enable();
+                }
                 break;
             case (Content.CMD_LOGOUT):
                 logger.debug("did i log out?");
@@ -51,6 +75,12 @@ public class Client extends ClientService
     {
         // TODO : ? LoginContent(user, pass)
         send(new Content(Content.CMD_LOGIN, username + ":" + password));
+    }
+
+    public void logOut()
+    {
+        // TODO : ? LoginContent(user, pass)
+        send(new Content(Content.CMD_LOGOUT, null));
     }
 
     public void register(String username, String password)

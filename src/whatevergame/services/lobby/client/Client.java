@@ -24,7 +24,28 @@ public class Client extends ClientService
         gui = new Gui(this);
     }
 
-    // TODO : Shouldn't need to cast.
+    /**
+     * {@inheritDoc}
+     * @see ClientService#enable()
+     */
+    public void enable()
+    {
+        gui.setVisible(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see ClientService#disable()
+     */
+    public void disable()
+    {
+        gui.setVisible(false);
+        gui.dispose();
+        whatevergame.services.login.client.Client login = (whatevergame.services.login.client.Client)client.getService(LOGIN);
+        login.logOut();
+        login.enable();
+    }
+
     public void receive(whatevergame.services.Content p_content)
     {
         Content content = (Content)p_content;

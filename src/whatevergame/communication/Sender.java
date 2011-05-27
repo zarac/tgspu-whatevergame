@@ -120,6 +120,7 @@ public class Sender
                     try
                     {
                         //logger.info("queue was empty, sleeping for " + WAIT_TIME + " seconds");
+                        // TODO : use wait(..) instead of sleep(..)
                         sleep(WAIT_TIME);
                     }
                     catch (InterruptedException e)

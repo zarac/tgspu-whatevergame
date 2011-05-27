@@ -16,11 +16,14 @@ abstract public class ClientService extends Service
      * A reference to the main client.
      */
     protected Client client;
+    //protected ClientService[] services;
 
     /**
      * The connection to the server.
      */
-    protected Connection connection;
+    //protected Connection connection;
+
+    abstract public void receive(Content content);
 
     /**
      * Create an instance of a ClientService implementation.
@@ -33,7 +36,8 @@ abstract public class ClientService extends Service
         super(id);
 
         this.client = client;
-        this.connection = client.getConnection();
+        //services = client.getServices();
+        //connection = client.getConnection();
     }
 
     /**
@@ -43,7 +47,7 @@ abstract public class ClientService extends Service
      */
     public void send(Content content)
     {
-        connection.send(new Package(content, id));
+        client.getConnection().send(new Package(content, id));
     }
 
     public void receivePackage(Connection connection, Package p_package)
@@ -51,5 +55,19 @@ abstract public class ClientService extends Service
         receive(p_package.getContent());
     }
 
-    abstract public void receive(Content content);
+    /**
+     * Enables the service.
+     * TODO : ? abstract
+     */
+    public void enable()
+    {
+    }
+
+    /**
+     * Disables the service.
+     * TODO : ? abstract
+     */
+    public void disable()
+    {
+    }
 }

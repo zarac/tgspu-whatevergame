@@ -37,12 +37,12 @@ public class Server extends ServerService
 
         logger.debug("LoginService received content\n    [" + content + "] from client\n    [" + client + "]");
 
-        String[] arguments;
+        String[] argument;
         switch (content.getCommand())
         {
             case (Content.CMD_LOGIN):
-                arguments = content.getArguments().split(":");
-                if (logIn(arguments[0], arguments[1]))
+                argument = content.getArgument().split(":");
+                if (logIn(argument[0], argument[1]))
                 {
                     send(client, new Content(Content.CMD_LOGIN, "success"));
                     services[LOGIN].removeClient(client);
@@ -57,12 +57,12 @@ public class Server extends ServerService
                 break;
 
             case (Content.CMD_REGISTER):
-                arguments = content.getArguments().split(":");
-                if (database.getUserByUsername(arguments[0]) != null)
+                argument = content.getArgument().split(":");
+                if (database.getUserByUsername(argument[0]) != null)
                     send(client, new Content(Content.CMD_REGISTER, "fail:username_unavailable"));
                 else
                 {
-                    User user = database.addUser(arguments[0], arguments[1]);
+                    User user = database.addUser(argument[0], argument[1]);
                     if (user == null)
                         send(client, new Content(Content.CMD_REGISTER, "fail:unknown"));
                     else

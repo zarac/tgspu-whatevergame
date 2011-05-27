@@ -51,6 +51,7 @@ public class Receiver extends Thread
      */
     public Receiver(Connection connection)
     {
+        super("ReceiverForSessionId:" + connection.getSessionId());
         logger = new Logger(this);
 
         this.connection = connection;
@@ -71,9 +72,9 @@ public class Receiver extends Thread
         logger.debug("Created ObjectInputStream");
 
         logger.debug("services=" + services);
-        logger.debug("Starting receiver...");
+        logger.info("starting receiver");
         start();
-        logger.info("Started receiver");
+        logger.debug("started receiver");
     }
 
     /**
@@ -119,7 +120,13 @@ public class Receiver extends Thread
      */
     public void dumpServices()
     {
-        logger.debug("Services:");
+        if (services == null)
+        {
+            logger.debug("no services!");
+            return;
+        }
+
+        logger.debug("services:");
         for (Service service : services)
         {
             if (service != null)
