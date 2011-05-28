@@ -24,11 +24,14 @@ import whatevergame.services.ServiceProvider;
  */
 public class Connection
 {
+    public final static int NO_SESSION_ID = -1;
+
     protected Sender sender;
     protected Receiver receiver;
     protected Socket socket;
-    protected int sessionId;
+    protected int sessionId = NO_SESSION_ID;
     protected ServiceProvider services;
+    protected DisconnectionHandler disconnectionHandler;
 
     /**
      * A logger, it's handy to have.
@@ -37,38 +40,25 @@ public class Connection
 
     /**
      * Constructs a new instance.
+     *
+     * @param services Services used for routing incoming packages.
+     * @param disconnectionHandler Will be called upon disconnection.
      */
-    public Connection()
+    public Connection(ServiceProvider services, DisconnectionHandler disconnectionHandler)
     {
         logger = new Logger(this);
-    }
-
-    /**
-     * Constructs a new instance of Connection and initializes it.
-     * 
-     * @param services Services needed for directing incoming packages.
-     * @param socket The socket used for communication.
-     * @param sessionId A session identification number.
-     */
-    public Connection(ServiceProvider services, Socket socket, int sessionId)
-    {
-        logger = new Logger(this);
-        init(services, socket, sessionId);
-    }
-
-    /**
-     * Initializes the Connection.
-     * 
-     * @param services Services needed for directing incoming packages.
-     * @param socket The socket used for communication.
-     * @param sessionId A session identification number.
-     */
-    public void init(ServiceProvider services, Socket socket, int sessionId)
-    {
-        logger.debug("init(" + services + ")");
         this.services = services;
+        this.disconnectionHandler = disconnectionHandler;
+    }
+
+    /**
+     * Set the socket. Needs to be called before connect() is called.
+     * 
+     * @param socket The socket used for communication.
+     */
+    public void setSocket(Socket socket)
+    {
         this.socket = socket;
-        this.sessionId = sessionId;
     }
 
     /**
@@ -76,8 +66,10 @@ public class Connection
      * 
      * @return If successful or not.
      */
-    public boolean connect()
+    public boolean connect(Socket socket)
     {
+        this.socket = socket;
+
         // TODO : clean up!
         logger.debug("Trying to set up connection...");
         logger.debug("connect(): services=" + services);
@@ -137,6 +129,16 @@ public class Connection
     public int getSessionId()
     {
         return this.sessionId;
+    }
+
+    /**
+     * Sets the sessionId for this instance.
+     *
+     * @param sessionId The sessionId.
+     */
+    public void setSessionId(int sessionId)
+    {
+        this.sessionId = sessionId;
     }
 
     /**
@@ -241,15 +243,15 @@ public class Connection
                 }
                 catch (IOException e)
                 {
-                    logger.error("Could not read object from object input stream (" + e.getMessage() + ").");
-                    logger.error("Deactivating!");
+                    logger.debug("could not read object from object input stream (" + e.getMessage() + ").");
                     active = false;
+                    disconnectionHandler.disconnected(Connection.this);
                 }
                 catch (ClassNotFoundException e)
                 {
-                    logger.error("Class not found (" + e.getMessage() + ").");
-                    logger.error("Deactivating!");
+                    logger.error("class not found (" + e.getMessage() + ").");
                     active = false;
+                    disconnectionHandler.disconnected(Connection.this);
                 }
             }
         }

@@ -130,5 +130,9 @@ public class Server
         logger.debug("removed client '" + client + "'");
         clients.remove(client);
         // TODO : remove client from all services!
+        for (int i = 0; i < services.count; i++)
+        {
+            ((ServerService)services.get(i)).removeClient(client);
+        }
     }
 }

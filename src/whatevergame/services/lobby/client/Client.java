@@ -1,6 +1,7 @@
 package whatevergame.services.lobby.client;
 
 import whatevergame.services.ClientService;
+import whatevergame.services.ExitContent;
 
 import whatevergame.services.lobby.Content;
 
@@ -62,9 +63,17 @@ public class Client extends ClientService
     {
         gui.setVisible(false);
         gui.dispose();
+
+        client.getService(CHAT).disable();
+        client.getService(SCORE).disable();
+        client.getService(PEWPEW).disable();
+        client.getService(FIVEPAD).disable();
+
         whatevergame.services.login.client.Client login = (whatevergame.services.login.client.Client)client.getService(LOGIN);
         login.logOut();
         login.enable();
+
+        send(new ExitContent());
     }
 
     public void receive(whatevergame.services.Content p_content)

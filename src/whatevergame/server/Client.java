@@ -1,13 +1,10 @@
 package whatevergame.server;
 
-import java.net.Socket;
-
 import whatevergame.communication.Connection;
+import whatevergame.communication.DisconnectionHandler;
 
 import whatevergame.server.User;
 
-import whatevergame.services.ServerService;
-import whatevergame.services.Service;
 import whatevergame.services.ServiceProvider;
 
 /**
@@ -25,12 +22,11 @@ public class Client extends Connection
      * 
      * @param connection The connection to the client.
      */
-    public Client(ServiceProvider services, Socket socket, int sessionId)
+    public Client(ServiceProvider services, DisconnectionHandler disconnectionHandler)
     {
         //src/whatevergame/server/Client.java|31 col 15 error| Cannot cast from ServiceProvider<ServerService> to ServiceProvider<Service>
         //super((ServiceProvider<Service>)services, socket, sessionId);
-        super(services, socket, sessionId);
-        connect();
+        super(services, disconnectionHandler);
     }
 
     /**

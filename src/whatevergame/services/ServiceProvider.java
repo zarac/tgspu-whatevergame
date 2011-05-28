@@ -1,19 +1,19 @@
 package whatevergame.services;
 
-import java.lang.reflect.Array;
-
 public class ServiceProvider
 {
-    Service[] services;
+    protected Service[] services;
+    public int count = 0;
 
-    public void init(int size)
+    public void init(int maxSize)
     {
-        services = new Service[size];
+        services = new Service[maxSize];
     }
 
     public void add(int id, Service service)
     {
         services[id] = service;
+        count++;
     }
 
     public Service get(int id)

@@ -7,6 +7,8 @@ import java.net.Socket;
 
 import logging.Logger;
 
+import whatevergame.communication.Connection;
+
 /**
  * Waits connecting clients.
  * 
@@ -19,6 +21,7 @@ public class ConnectionCreator extends Thread
     protected ServerSocket serverSocket;
     protected boolean acceptingConnections;
     protected int nextSessionId;
+    protected DisconnectionHandler disconnectionHandler;
 
     /**
      * A logger, it's handy to have.
@@ -36,6 +39,7 @@ public class ConnectionCreator extends Thread
 
         this.server = server;
         nextSessionId = 0;
+        disconnectionHandler = new DisconnectionHandler();
     }
 
     /**
@@ -69,12 +73,16 @@ public class ConnectionCreator extends Thread
         acceptingConnections = true;
         while (acceptingConnections)
         {
-            logger.info("Waiting for incoming connection.");
+            Client client = new Client(server.getServices(), disconnectionHandler);
+
+            logger.info("waiting for incoming connection...");
             try
             {
                 Socket socket = serverSocket.accept();
                 logger.info("accepted socket, creating client");
-                Client client = new Client(server.getServices(), socket, nextSessionId++);
+                client.connect(socket);
+                // TODO : better session id
+                client.setSessionId(nextSessionId++);
                 server.addClient(client);
             }
             catch (IOException e)
@@ -102,5 +110,16 @@ public class ConnectionCreator extends Thread
     public void setAcceptingConnections(boolean acceptingConnections)
     {
         this.acceptingConnections = acceptingConnections;
+    }
+
+    protected class DisconnectionHandler implements whatevergame.communication.DisconnectionHandler
+    {
+        public void disconnected(Connection connection)
+        {
+            Client client = (Client)connection;
+
+            logger.info("client disconnected: " + client);
+            server.removeClient(client);
+        }
     }
 }

@@ -161,7 +161,7 @@ public class Logger
      */
     protected void logToConsole(String level, String message)
     {
-        System.out.println("\n " + level + " | " + getTimestamp() + " | " + getLogTag() + "\n    " + message);
+        System.out.println(" " + level + " | " + getTimestamp() + " | " + getLogTag() + "\n    " + message);
     }
     
     /**

@@ -41,6 +41,7 @@ public class Client
     protected String serverIp;
     protected int serverPort;
     protected ServerConnector serverConnector;
+    protected DisconnectionHandler disconnectionHandler;
     
     protected Logger logger;
 
@@ -62,7 +63,8 @@ public class Client
 
         initServices();
 
-        connection = new Connection();
+        disconnectionHandler = new DisconnectionHandler();
+        connection = new Connection(services, disconnectionHandler);
 
         serverConnector = new ServerConnector();
     }
@@ -91,14 +93,11 @@ public class Client
     public boolean connect(String host, int port)
     {
         // TODO : ? Should be in another thread
-        logger.debug("trying to connecting...");
-        // -1 means no session ID
+        logger.debug("trying to connect...");
         try
         {
-            //connection = new Connection(services, new Socket(serverIp, serverPort), -1);
             logger.debug("services=" + services);
-            connection.init(services, new Socket(host, port), -1);
-            connection.connect();
+            connection.connect(new Socket(host, port));
             logger.info("connected to '" + host + ":" + port + "'");
             return true;
         }
@@ -268,6 +267,14 @@ public class Client
             {
                 setText("");
             }
+        }
+    }
+
+    protected class DisconnectionHandler implements whatevergame.communication.DisconnectionHandler
+    {
+        public void disconnected(Connection connection)
+        {
+            logger.error("UH OH! disconnected from server: " + connection);
         }
     }
 }
