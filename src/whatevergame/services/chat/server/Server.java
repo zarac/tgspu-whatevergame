@@ -45,6 +45,9 @@ public class Server extends ServerService
         Content content = (Content)p_content;
         logger.debug("Received content '" + content + "' from client '" + sender + "'.");
 
+        whatevergame.services.score.server.Server score = (whatevergame.services.score.server.Server)getService(SCORE);
+        score.add(sender.getUser(), 1);
+
         String time = dateFormat.format(Calendar.getInstance().getTime());
 
         for (Client client : clients)

@@ -9,6 +9,7 @@ import whatevergame.server.User;
 public class Database extends MySqlDatabase
 {
     // CREATE TABLE wgUser (id INT NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL, PRIMARY KEY (id));
+    // CREATE TABLE wgUser (id INT NOT NULL AUTO_INCREMENT, username varchar(255) NOT NULL, password varchar(255) NOT NULL score INT, PRIMARY KEY (id));
     protected String userTable = "wgUser";
 
     public User getUserByUsername(String p_username)

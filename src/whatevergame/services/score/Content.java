@@ -2,11 +2,11 @@ package whatevergame.services.score;
 
 public class Content extends whatevergame.services.Content
 {
-    protected String test;
+    protected String score;
 
-    public Content(String test)
+    public Content(String score)
     {
-        this.test = test;
+        this.score = score;
     }
 
     /**
@@ -15,6 +15,16 @@ public class Content extends whatevergame.services.Content
      */
     public String toString()
     {
-        return test;
+        return score;
+    }
+
+    /**
+     * Gets the score for this instance.
+     *
+     * @return The score.
+     */
+    public String getScore()
+    {
+        return this.score;
     }
 }

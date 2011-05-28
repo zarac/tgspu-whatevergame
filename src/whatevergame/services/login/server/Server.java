@@ -26,7 +26,6 @@ public class Server extends ServerService
     {
         super(id, server);
 
-        // database connection
         database = new Database();
         database.dumpUserTable();
     }
@@ -48,6 +47,8 @@ public class Server extends ServerService
                     send(client, new Content(Content.CMD_LOGIN, "fail"));
                 else
                 {
+                    whatevergame.services.score.server.Server score = (whatevergame.services.score.server.Server)getService(SCORE);
+                    score.add(user, 10);
                     client.setUser(user);
                     send(client, new Content(Content.CMD_LOGIN, "success"));
                     getService(LOGIN).removeClient(client);

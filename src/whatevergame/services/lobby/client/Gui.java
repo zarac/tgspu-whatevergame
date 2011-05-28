@@ -10,8 +10,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
@@ -19,6 +21,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import logging.Logger;
 
 import whatevergame.services.Service;
 
@@ -37,9 +41,12 @@ public class Gui extends JFrame implements WindowListener
 
     protected Dimension dimension;
 
+    protected Logger logger;
+
     public Gui(Client client)
     {
         this.client = client;
+        logger = new Logger(this);
 
         setTitle("Whatever Game");
         setVisible(false);
@@ -206,22 +213,45 @@ public class Gui extends JFrame implements WindowListener
     }
 
     // TODO : use something else than JButton
-    protected class PlayFivePad extends JButton implements MouseListener
+    protected class PlayFivePad extends JPanel implements MouseListener
     {
-        protected final static String iconPath = "data/images/logo5pad.jpg";
+        protected final static String imagePath = "data/images/logo5pad.jpg";
+        protected Image image;
 
         protected PlayFivePad()
         {
-            int width = dimension.width/4;
-            int height = dimension.height/4;
-            //setBounds(0, height/2, width, height);
-            setPreferredSize(new Dimension(width, height));
 
             addMouseListener(this);
             // TODO : Shouldn't be hard coded
-            //setIconImage(getScaledImage(iconPath, width, height));
-            setIcon(new ImageIcon(getScaledImage(iconPath, width, height)));
+            //setIconImage(getScaledImage(imagePath, width, height));
+            //setIcon(new ImageIcon(getScaledImage(imagePath, width, height)));
+            //image = getScaledImage(imagePath, width, height);
             add(new JLabel("Five Pad"));
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see javax.swing.JComponent#paintComponent(Graphics)
+         */
+        protected void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+
+            //dimension = Toolkit.getDefaultToolkit().getScreenSize();
+            //Rectangle clip = g.getClipBounds();
+            int width = Gui.this.getSize().width/2;
+            int height = Gui.this.getSize().height/2;
+            setPreferredSize(new Dimension(width, height));
+            //int width = dimension.width/4;
+            //int height = dimension.height/4;
+            //image = getScaledImage(imagePath, width, height);
+            image = new ImageIcon(getScaledImage(imagePath, width, height)).getImage();
+            g.drawImage(image, 0, 0, null);
+
+            //logger.debug("getWidth()=" + getWidth() + ", getHeight()=" + getHeight());
+            logger.debug("width=" + width + ", height=" + height);
+            revalidate();
+            gameBox.revalidate();
         }
 
         /**
@@ -270,24 +300,42 @@ public class Gui extends JFrame implements WindowListener
         }
     }
 
-    protected class PlayPewPew extends JButton implements MouseListener
+    protected class PlayPewPew extends JPanel implements MouseListener
     {
-        protected final static String iconPath = "data/images/logoPewWep.jpg";
+        protected final static String imagePath = "data/images/logoPewWep.jpg";
+        protected Image image;
 
         protected PlayPewPew()
         {
-            int width = dimension.width/4;
-            int height = dimension.height/4;
-            new logging.Logger(this).debug("width=" + width + ", height=" + height);
-            setPreferredSize(new Dimension(width, height));
+            //int width = dimension.width/4;
+            //int height = dimension.height/4;
+            //new logging.Logger(this).debug("width=" + width + ", height=" + height);
+            //setPreferredSize(new Dimension(width, height));
             //setBounds(0, 0, width, height);
 
             //setText("PEW PEW!");
             addMouseListener(this);
             // TODO : Shouldn't be hard coded
-            setIcon(new ImageIcon(getScaledImage(iconPath, width, height)));
-            //setIconImage(getScaledImage(iconPath, width, height));
-            add(new JLabel("Pew Wep"));
+            //setIcon(new ImageIcon(getScaledImage(imagePath, width, height)));
+            //setIconImage(getScaledImage(imagePath, width, height));
+            //add(new JLabel("Pew Wep"));
+
+        }
+
+        /**
+         * {@inheritDoc}
+         * @see javax.swing.JComponent#paintComponent(Graphics)
+         */
+        protected void paintComponent(Graphics g)
+        {
+            super.paintComponent(g);
+            int width = Gui.this.getSize().width/2;
+            int height = Gui.this.getSize().height/2;
+            setPreferredSize(new Dimension(width, height));
+            image = new ImageIcon(getScaledImage(imagePath, width, height)).getImage();
+            g.drawImage(image, 0, 0, null);
+            revalidate();
+            gameBox.revalidate();
         }
 
         /**
