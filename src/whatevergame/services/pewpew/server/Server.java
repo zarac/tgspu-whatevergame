@@ -2,7 +2,7 @@ package whatevergame.services.pewpew.server;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-//import server.Gun;
+import java.util.Random;
 import whatevergame.server.Client;
 
 import whatevergame.services.pewpew.State;
@@ -24,6 +24,8 @@ public class Server extends ServerService
     private int minlimit = 2;
     private Gun gun;
     private ArrayList<Player> players;
+
+    protected Random random;
     
     public Server(int id, whatevergame.server.Server server)
     {
@@ -31,6 +33,7 @@ public class Server extends ServerService
         gun = new Gun(3);
         players = new ArrayList<Player>();
         rooms = new LinkedList<Room>();
+        random = new Random();
     }
 
     /**
@@ -40,8 +43,13 @@ public class Server extends ServerService
     public void removeClient(Client client)
     {
         super.removeClient(client);
-        // TODO : graceful removal of client
-        // loop through all rooms and remove player if part of one...
+
+        for (int i = 0; i < rooms.size(); ++i)
+        {
+            Player player = rooms.get(i).getPlayer(client);
+            if (player != null)
+                rooms.get(i).removePlayer(player);
+        }
     }
 
     public void receive(Client client, whatevergame.services.Content p_content)
@@ -116,8 +124,7 @@ public class Server extends ServerService
         }
         else if (content.getCommand() == Content.PEWPEW_EXIT)
         {
-            logger.warning("exit");
-            //room.sendToAll(new StateContent(room.getState()));
+            removeClient(client);
         }
     }
     
@@ -188,19 +195,6 @@ public class Server extends ServerService
         }
     }
 
-    //public void sendMessageToAll(boolean in1, boolean in2, boolean in3, boolean in4){
-        //ContentServer content;
-        //for(int i = 0; i < clients.size() && i < players.size(); i++){
-            //if(counter == i){
-                //content = new ContentServer(players.get(i).isDead(),players.get(i).getRound(),in1, in3, in4);
-                //send(clients.get(i), content);
-            //} else {
-                //content = new ContentServer(players.get(i).isDead(),players.get(i).getRound(),in1, in3, in4);
-                //send(clients.get(i), content);
-            //}
-        //}
-    //}
-
     private void pewpewExit(Client client) {
         for(int i = 0; i < players.size(); i++){
             if(players.get(i).getID() == client.getSessionId()){
@@ -243,9 +237,11 @@ public class Server extends ServerService
 
     public class Room
     {
+        protected final static int NOT_PLAYING = -1;
         protected final static int DEFAULT_SIZE = 2;
+
         protected int id;
-        protected int currentPlayerId;
+        protected int currentPlayerId = NOT_PLAYING;
         protected Player[] players;
         protected int playerCount = 0;
         protected int pointsForShooting;
@@ -278,6 +274,7 @@ public class Server extends ServerService
                 {
                     players[i] = player;
                     playerCount++;
+                    send(player.getClient(), new Content(Content.PLAYER_ID, id, i));
                     return true;
                 }
             }
@@ -288,9 +285,16 @@ public class Server extends ServerService
         public boolean nextPlayer()
         {
             int counter = 0;
+            boolean dead;
 
             currentPlayerId++;
-            while (players[currentPlayerId].isDead())
+            Player player = players[currentPlayerId];
+            if (player == null)
+                dead = true;
+            else
+                dead = player.isDead();
+
+            while (dead)
             {
                 if (currentPlayerId >= players.length)
                     currentPlayerId = 0;
@@ -298,6 +302,12 @@ public class Server extends ServerService
                 currentPlayerId++;
                 if (counter++ >= players.length -1)
                     return false;
+
+                player = players[currentPlayerId];
+                if (player == null)
+                    dead = true;
+                else
+                    dead = player.isDead();
             }
 
             return true;
@@ -305,7 +315,7 @@ public class Server extends ServerService
 
         /**
          * Removes a player from the room. Returns false if player is not in
-         * room.
+         * room. When last player leaves, remove the room itself.
          * 
          * @param player The player to remove.
          * @return If successful or not.
@@ -318,6 +328,11 @@ public class Server extends ServerService
                 {
                     players[i] = null;
                     playerCount--;
+                    if (playerCount == 0)
+                        rooms.remove(this);
+                    // TODO : ? What happens if a game is active!?
+                    // TODO : ? What happens if someone is left all alone
+                    sendToAll(new StateContent(getState()));
                     return true;
                 }
             }
@@ -342,6 +357,9 @@ public class Server extends ServerService
          */
         public Player getCurrentPlayer()
         {
+            if (currentPlayerId == NOT_PLAYING)
+                return null;
+
             return players[currentPlayerId];
         }
 
@@ -424,6 +442,7 @@ public class Server extends ServerService
 
         public void finish()
         {
+            currentPlayerId = NOT_PLAYING;
             for (int i = 0; i < players.length; ++i)
                 players[i].setReady(false);
 
@@ -432,8 +451,10 @@ public class Server extends ServerService
 
         public void start()
         {
-            // TODO : randomize who starts
-            // send state content to all
+            int starter = random.nextInt(players.length);
+            logger.debug("starter=" + starter);
+            currentPlayerId = starter;
+            sendToAll(new StateContent(getState()));
         }
 
         public void sendToAll(whatevergame.services.Content content)

@@ -10,7 +10,7 @@ import whatevergame.services.pewpew.server.Server;
 public class State implements Serializable
 {
     protected int pointsForShooting;
-    protected int currentPlayer;
+    protected int currentPlayerId;
     protected StatePlayer[] players;
 
     public State(Server.Room room)
@@ -20,7 +20,7 @@ public class State implements Serializable
         StatePlayer[] statePlayers = new StatePlayer[players.length];
 
         pointsForShooting = room.getPointsForShooting();
-        currentPlayer = room.getCurrentPlayerId();
+        currentPlayerId = room.getCurrentPlayerId();
 
         for (int i = 0; i < players.length; ++i)
         {
@@ -31,15 +31,45 @@ public class State implements Serializable
         }
     }
 
-    public boolean isAnyoneAlive()
+    /**
+     * Gets the pointsForShooting for this instance.
+     *
+     * @return The pointsForShooting.
+     */
+    public int getPointsForShooting()
     {
-        for (int i = 0; i < players.length; ++i)
-        {
-            if (!players[i].isDead())
-                return true;
-        }
+        return this.pointsForShooting;
+    }
 
-        return false;
+    /**
+     * Gets the currentPlayerId for this instance.
+     *
+     * @return The currentPlayerId.
+     */
+    public int getCurrentPlayer()
+    {
+        return this.currentPlayerId;
+    }
+
+    /**
+     * Gets the players for this instance.
+     *
+     * @return The players.
+     */
+    public StatePlayer[] getPlayers()
+    {
+        return this.players;
+    }
+
+    /**
+     * Gets the players for this instance.
+     *
+     * @param index The index to get.
+     * @return The players.
+     */
+    public StatePlayer getPlayers(int index)
+    {
+        return this.players[index];
     }
 
     protected class StatePlayer
