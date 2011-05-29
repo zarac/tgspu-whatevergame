@@ -37,7 +37,15 @@ public class Client extends ClientService
         logger.info(content.toString());
     }
 
-    public JPanel getGui()
+    /**
+	 * {@inheritDoc}
+	 * @see ClientService#enable()
+	 */
+	public void enable()
+	{
+	}
+
+	public JPanel getGui()
     {
         whatevergame.services.lobby.client.Client lobby = (whatevergame.services.lobby.client.Client)getService(LOBBY);
         JPanel panel = new JPanel();

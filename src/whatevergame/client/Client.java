@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import logging.Logger;
@@ -275,6 +276,7 @@ public class Client
         public void disconnected(Connection connection)
         {
             logger.error("UH OH! disconnected from server: " + connection);
+            JOptionPane.showMessageDialog(null, "UH OH! disconnected from server: " + connection);
         }
     }
 }
