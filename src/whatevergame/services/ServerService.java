@@ -56,6 +56,18 @@ abstract public class ServerService extends Service
     }
 
     /**
+     * Packages content and sends it to all registered clients.
+     * 
+     * @param content The content.
+     */
+    public void sendToAll(Content content)
+    {
+        Package thePackage = new Package(content, id);
+        for (Client client : clients)
+            client.send(thePackage);
+    }
+
+    /**
      * Packages content and sends it to client.
      * 
      * @param client The client.
