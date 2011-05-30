@@ -15,6 +15,8 @@ import whatevergame.services.pewpew.ContentServer;
 import whatevergame.services.pewpew.server.logic.Gun;
 import whatevergame.services.pewpew.server.logic.Player;
 
+import whatevergame.services.Service;
+
 public class Server extends ServerService
 {
     protected static int nextRoomId = 1;
@@ -54,6 +56,8 @@ public class Server extends ServerService
 
     public void receive(Client client, whatevergame.services.Content p_content)
     {
+        whatevergame.services.score.server.Server score = (whatevergame.services.score.server.Server)getService(Service.SCORE);
+
         Content content = (Content)p_content;
         logger.debug("Received content '" + content + "' from client '" + client + "'.");
             
@@ -64,9 +68,9 @@ public class Server extends ServerService
             room.addPlayer(new Player(gun, client));
             if (room.isFull())
                 room.start();
-            room.sendToAll(new Content(Content.PEWPEW_INIT));
+            room.sendToAll(new StateContent(room.getState()));
         }
-        else if (content.getCommand() == Content.PEWPEW_SPINN)
+        else if (content.getCommand() == Content.PEWPEW_SPIN)
         {
             logger.warning("spin");
 
@@ -75,6 +79,7 @@ public class Server extends ServerService
             if (player.equals(room.getCurrentPlayer()))
             {
                 player.spinChamber();
+                room.resetPoints();
                 room.sendToAll(new StateContent(room.getState()));
             }
             else
@@ -95,7 +100,10 @@ public class Server extends ServerService
                     room.resetPoints();
                 }
                 else
+                {
+                    score.add(client.getUser(), room.getPointsForShooting());
                     room.increasePoints();
+                }
 
                 if (room.nextPlayer() == false)
                 {
@@ -282,12 +290,15 @@ public class Server extends ServerService
             return false;
         }
 
+        // TODO : clean up
         public boolean nextPlayer()
         {
             int counter = 0;
             boolean dead;
 
             currentPlayerId++;
+            if (currentPlayerId >= players.length)
+                currentPlayerId = 0;
             Player player = players[currentPlayerId];
             if (player == null)
                 dead = true;
@@ -296,10 +307,12 @@ public class Server extends ServerService
 
             while (dead)
             {
+                // reached end?
+                currentPlayerId++;
                 if (currentPlayerId >= players.length)
                     currentPlayerId = 0;
 
-                currentPlayerId++;
+                // checked all?
                 if (counter++ >= players.length -1)
                     return false;
 
@@ -384,12 +397,12 @@ public class Server extends ServerService
         }
 
         /**
-         * Gets the players for this instance.
+         * Gets a players for this instance.
          *
          * @param index The index to get.
          * @return The players.
          */
-        public Player getPlayers(int index)
+        public Player getPlayer(int index)
         {
             return this.players[index];
         }
@@ -418,7 +431,7 @@ public class Server extends ServerService
         {
             for (int i = 0; i < players.length; ++i)
             {
-                if (players[i].getClient().equals(client))
+                if (players[i] != null && players[i].getClient().equals(client))
                     return players[i];
             }
 
@@ -454,7 +467,6 @@ public class Server extends ServerService
             int starter = random.nextInt(players.length);
             logger.debug("starter=" + starter);
             currentPlayerId = starter;
-            sendToAll(new StateContent(getState()));
         }
 
         public void sendToAll(whatevergame.services.Content content)

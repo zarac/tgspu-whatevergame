@@ -5,7 +5,7 @@ public class Content extends whatevergame.services.Content
 {
     public final static int PEWPEW_INIT = 0;
     public final static int PEWPEW_SHOOT = 1;
-    public final static int PEWPEW_SPINN = 2;
+    public final static int PEWPEW_SPIN = 2;
     public final static int PEWPEW_EXIT = 3;
     public final static int PEWPEW_REPLAY = 4;
     public final static int NOT_YOUR_TURN = 5;

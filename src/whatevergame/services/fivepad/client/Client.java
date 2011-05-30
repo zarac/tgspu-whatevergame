@@ -9,49 +9,46 @@ import whatevergame.services.ClientService;
 
 import whatevergame.services.fivepad.Content;
 
-/**
- * The Five Pad client.
- * 
- * @author Hannes Landstedt (hannes.landstedt@gmail.com)
- * @version null
- */
-public class Client extends ClientService
-{
+public class Client extends ClientService {
+
+    FivePadGui gui;
+
     /**
      * {@inheritDoc}
      * @see ClientService#Client(int,Client)
      */
-    public Client(int id, whatevergame.client.Client client)
-    {
+    public Client(int id, whatevergame.client.Client client) {
         super(id, client);
+
+        gui = new FivePadGui(this);
+
+    }
+
+    public FivePadGui getGui() {
+        return gui;
     }
 
     /**
      * {@inheritDoc}
      * @see ClientService#receive(Content)
      */
-    public void receive(whatevergame.services.Content p_content)
-    {
-        Content content = (Content)p_content;
+    // TODO : Shouldn't need to cast.
+    public void receive(whatevergame.services.Content p_content) {
 
+        Content content = (Content) p_content;
+        System.out.println("content: " + content.toString());
         logger.info(content.toString());
+        if (content.toString().equalsIgnoreCase("your turn")){
+            gui.setLabelText(content.toString());
+        }
+//        content.
+//        gui.setLabelText(content.toString());
     }
-
-    /**
-	 * {@inheritDoc}
-	 * @see ClientService#enable()
-	 */
-	public void enable()
-	{
-	}
-
-	public JPanel getGui()
-    {
-        whatevergame.services.lobby.client.Client lobby = (whatevergame.services.lobby.client.Client)getService(LOBBY);
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(1,1));
-        panel.add(new JLabel("GIVE PAD GUI"));
-        panel.add(lobby.getBackToGameSelectButton());
-        return panel;
-    }
+//    public JPanel getGui()
+//    {
+//        JPanel panel = new JPanel();
+//        panel.setLayout(new GridLayout(1,1));
+//        panel.add(new JLabel("GIVE PAD GUI"));
+//        return panel;
+//    }
 }

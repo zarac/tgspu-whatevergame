@@ -27,7 +27,7 @@ public class PewPewGui extends JPanel {
 //    private ControllerPewPew client;
     private Client client;
     private JButton buttonShoot, buttonSpin, buttonQuit, /*ny*/ buttonQue;
-    private JLabel labelBack, labelScore;
+    private JLabel labelBack, labelScore, labelPlayers;
     private JPanel panelButton, panelMain;
     private Dimension frameDimension, panelButtonDimension, buttonDimension, screenDimension;
 
@@ -43,6 +43,7 @@ public class PewPewGui extends JPanel {
         labelBack = new JLabel();
         client.setImageNormal();
         labelScore = new JLabel("labelScore");
+        labelPlayers = new JLabel("labelPlayers");
         
         screenDimension = new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
         frameDimension = new Dimension (screenDimension.width/3*2,screenDimension.height/3*2);
@@ -77,6 +78,7 @@ public class PewPewGui extends JPanel {
         panelButton.add(buttonQuit);
         panelButton.add(buttonQue);
         panelButton.add(labelScore);
+        panelButton.add(labelPlayers);
         this.add(panelButton, BorderLayout.SOUTH);
         this.add(labelBack, BorderLayout.CENTER);
     }
@@ -97,10 +99,16 @@ public class PewPewGui extends JPanel {
         labelBack.setIcon(p_image);
     }
     
-    public void setScoreLabel(String p_string){
+    public void setLabelScore(String p_string){
         labelScore.setText(p_string);
         
     }
+
+    public void setPlayers(String players)
+    {
+        labelPlayers.setText(players);
+    }
+
     private class MyListener implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
@@ -109,8 +117,8 @@ public class PewPewGui extends JPanel {
                 client.Shoot();
             }
             if (e.getSource() == buttonSpin) {
-                System.out.println("Spinn");
-                client.Spinn();
+                System.out.println("Spin");
+                client.Spin();
             }
             if (e.getSource() == buttonQue) {
                 System.out.println("Que");

@@ -28,7 +28,7 @@ public class Server extends ServerService
     public void addClient(Client client)
     {
         super.addClient(client);
-        logger.debug("Sending welcome message to client.");
+
         send(client, new Content("WELCOME TODAY IS RAINY, NOT!"));
     }
 }

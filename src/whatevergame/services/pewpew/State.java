@@ -15,18 +15,18 @@ public class State implements Serializable
 
     public State(Server.Room room)
     {
-        Player[] players = room.getPlayers();
+        Player[] roomPlayers = room.getPlayers();
 
-        StatePlayer[] statePlayers = new StatePlayer[players.length];
+        players = new StatePlayer[roomPlayers.length];
 
         pointsForShooting = room.getPointsForShooting();
         currentPlayerId = room.getCurrentPlayerId();
 
-        for (int i = 0; i < players.length; ++i)
+        for (int i = 0; i < roomPlayers.length; ++i)
         {
-            if (players[i] != null)
+            if (roomPlayers[i] != null)
             {
-                statePlayers[i] = new StatePlayer(players[i].getClient().getUser().getUsername(), players[i].isDead(), players[i].isReady());
+                players[i] = new StatePlayer(roomPlayers[i].getClient().getUser().getUsername(), roomPlayers[i].isDead(), roomPlayers[i].isReady());
             }
         }
     }
@@ -46,7 +46,7 @@ public class State implements Serializable
      *
      * @return The currentPlayerId.
      */
-    public int getCurrentPlayer()
+    public int getCurrentPlayerId()
     {
         return this.currentPlayerId;
     }
@@ -62,17 +62,17 @@ public class State implements Serializable
     }
 
     /**
-     * Gets the players for this instance.
+     * Gets a player for this instance.
      *
      * @param index The index to get.
      * @return The players.
      */
-    public StatePlayer getPlayers(int index)
+    public StatePlayer getPlayer(int index)
     {
         return this.players[index];
     }
 
-    protected class StatePlayer
+    public class StatePlayer implements Serializable
     {
         protected String name;
         protected boolean dead;
