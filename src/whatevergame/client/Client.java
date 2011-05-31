@@ -84,6 +84,10 @@ public class Client
         services.add(Service.MOTD, new whatevergame.services.motd.client.Client(Service.MOTD, this));
         services.add(Service.LOBBY, new whatevergame.services.lobby.client.Client(Service.LOBBY, this));
         services.add(Service.SCORE, new whatevergame.services.score.client.Client(Service.SCORE, this));
+        services.add(Service.QUICKLY, new whatevergame.services.quickly.client.Client(Service.QUICKLY, this));
+
+        // TODO : temp
+        ((ClientService)services.get(Service.QUICKLY)).enable();
     }
 
     /**

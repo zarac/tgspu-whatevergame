@@ -96,11 +96,13 @@ public class Server extends ServerService
             {
                 if (gun.fireGun())
                 {
+                    logger.debug("BOOM");
                     player.setToDead();
                     room.resetPoints();
                 }
                 else
                 {
+                    logger.debug("no boom, phew");
                     score.add(client.getUser(), room.getPointsForShooting());
                     room.increasePoints();
                 }
