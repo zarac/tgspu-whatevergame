@@ -20,6 +20,35 @@ Resources
         : http://www.roseindia.net/java/thread/index.shtml
             : http://www.roseindia.net/java/thread/life-cycle-of-threads.shtml
             : http://www.roseindia.net/java/thread/thread-creation.shtml
+Structure (in Swedish, needed when turning in project)
+"""
+- Struktur för källkoden
+/whatevergame - Server och Client main metoderna
+/whatevergame/Server - här finns main-metoden för servern. porten som används för kommunkation kan ställas in här (inställd på 3000)
+/whatevergame/Client - här finns main-metoden för klienten. porten som används för kommunkation kan ställas in här (inställd på 3000)
+/whatevergame/communication - saker som har med kommunkationen att göra. används av både server och klient
+/whatevergame/communication/Connection - en anslutning, innehåller inre klasserna 'Sender' och 'Receiver'
+/whatevergame/communication/DisconnectionHandler - ett interface som 'Connection' kräver för att ta hand om avbrutna anslutningar
+/whatevergame/server - specifikt för servern
+/whatevergame/server/Server - kontroller klass för servern. startar alla services. här i finns även databasinställningar
+/whatevergame/server/Client - en klient sett ur serverns ögon. extendar 'communication/connection'. har en referens till 'User' då han är inloggad
+/whatevergame/server/User - en registrerad användare (hämtar info. ifrån databasen)
+/whatevergame/server/ConnectionCreator - står och väntar efter inkommade anslutningar. skapar Client-instanser
+/whatevergame/server/MySqlDatabase - tar hand om anslutningen till en MySQL-databas
+/whatevergame/client - specifikt för klienten
+/whatevergame/client/Client - kontrollklass för klienten. ansluter till en server och startar login services
+/whatevergame/services - här finns alla tjänster i enskilda paket. innehåller också ramverksfilerna
+/whatevergame/services/ServerService - abstrakt klass som serverdelen av en service ska implementera
+/whatevergame/services/ClientService - abstrakt klass som klientdelen av en service ska implementera
+/whatevergame/services/Service - gemensamnt hos både klient- och serverservicar
+/whatevergame/services/ServiceProvider - en simpel kollektion av services
+/whatevergame/services/Content - informationen som skickas mellan klient och server
+/whatevergame/services/Package - en wrapper runt ett 'Content'. innehåller ett seriviceId för att 'Connection.Receiver' skall kunna derigera 'Content' till rätt service
+/whatevergame/services/<ServiceNamn>/ - kan se ut hursomhälst men våra services håller generellt liknande struktur som själva 'whatevergame' paketet. gemensamma saker, dvs. 'Content'-klasser samt eventuellt annat, direkt i paketet, specifikt för servern i ett 'server'-subpaket och speficikt för klienten i ett 'client'-subpaket. varje service ska extenda en 'ServerService' och 'ClientService'.
+- 'src' och 'lib' mapparna måste finnas i CLASSPATH
+- 'data' mappen måste ligga i mappen där programmet startas ifrån
+"""
+
 Kriterier
     Många spelinstanser
     Ett spel
