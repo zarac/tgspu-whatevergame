@@ -32,7 +32,7 @@ public class Server extends ServerService
     public Server(int id, whatevergame.server.Server server)
     {
         super(id, server);
-        gun = new Gun(3);
+        gun = new Gun(6);
         players = new ArrayList<Player>();
         rooms = new LinkedList<Room>();
         random = new Random();
@@ -99,6 +99,7 @@ public class Server extends ServerService
                     logger.debug("BOOM");
                     player.setToDead();
                     room.resetPoints();
+                    gun.spinChamber();
                 }
                 else
                 {
@@ -107,13 +108,12 @@ public class Server extends ServerService
                     room.increasePoints();
                 }
 
-                if (room.nextPlayer() == false)
+                if (room.nextPlayer() == false || room.playersAlive() == 1)
                 {
-                    sendToAll(new StateContent(room.getState()));
                     room.finish();
                 }
-                else
-                    room.sendToAll(new StateContent(room.getState()));
+
+                room.sendToAll(new StateContent((room.getState())));
             }
             else
             {
@@ -127,21 +127,27 @@ public class Server extends ServerService
             Player player = room.getPlayer(client);
             player.setReady(true);
 
+            // give points for replaying
+            score.add(client.getUser(), room.getPointsForReplaying());
+
+        
+            
+            if (room.areAllReady())
+        {
+                room.start();
+            }
+            
             room.sendToAll(new StateContent(room.getState()));
 
-            // TODO : Check if everyone is ready, if so, start new "round"
-            //room.start();
-        }
-        else if (content.getCommand() == Content.PEWPEW_EXIT)
-        {
+        } else if (content.getCommand() == Content.PEWPEW_EXIT) {
             removeClient(client);
         }
     }
     
     public boolean isAllDead(){
         boolean isAllDead = true;
-        for(int i = 0; i < players.size(); i++){
-            if(!players.get(i).isDead()){
+        for (int i = 0; i < players.size(); i++) {
+            if (!players.get(i).isDead()) {
                 isAllDead = false;
             }
         }
@@ -156,11 +162,10 @@ public class Server extends ServerService
                 players = new ArrayList<Player>();
 //                JOptionPane.showMessageDialog(null, "Players size = "+players.size());
                 counter = 0;
-            }
-            else {
-                while(check){
+        } else {
+            while (check) {
                     counter++;
-                    if(counter > players.size()){
+                if (counter > players.size()) {
                         counter = 0;
                     }
                     check = players.get(counter).isDead();
@@ -179,55 +184,51 @@ public class Server extends ServerService
         super.addClient(client);
         players.add(new Player(gun, client));
         
-        if(clients.size() < minlimit){
+        if (clients.size() < minlimit) {
 //            String text = "Await more players";
-            sendMessageToAll(false,false, true, false);
+            sendMessageToAll(false, false, true, false);
         } else {
 //            String text = "Enough players";
-            sendMessageToAll(false,false, true, false);
+            sendMessageToAll(false, false, true, false);
         }
     }
     
-    public void sendMessageToAll(){
-        sendMessageToAll(true,false, false, false);
+    public void sendMessageToAll() {
+        sendMessageToAll(true, false, false, false);
     }
     
-    public void sendMessageToAll(boolean in1, boolean in2, boolean in3, boolean in4){
+    public void sendMessageToAll(boolean in1, boolean in2, boolean in3, boolean in4) {
         ContentServer content;
-        for(int i = 0; i < clients.size() && i < players.size(); i++){
-            if(counter == i){
-                content = new ContentServer(players.get(i).isDead(),players.get(i).getRound(),in1, in3, in4);
+        for (int i = 0; i < clients.size() && i < players.size(); i++) {
+            if (counter == i) {
+                content = new ContentServer(players.get(i).isDead(), players.get(i).getRound(), in1, in3, in4);
                 send(clients.get(i), content);
             } else {
-                content = new ContentServer(players.get(i).isDead(),players.get(i).getRound(),in1, in3, in4);
+                content = new ContentServer(players.get(i).isDead(), players.get(i).getRound(), in1, in3, in4);
                 send(clients.get(i), content);
             }
         }
     }
 
     private void pewpewExit(Client client) {
-        for(int i = 0; i < players.size(); i++){
-            if(players.get(i).getID() == client.getSessionId()){
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getID() == client.getSessionId()) {
                players.get(i).setToDead();
             }
         }
     }
 
     private void pewpewQue(Client client) {
-//        JOptionPane.showMessageDialog(null, "Players size (que) = "+players.size());
         boolean addToGame = true;
-        for(int i = 0; i < players.size(); i++){
-            if(players.get(i).getID() == client.getSessionId()){
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).getID() == client.getSessionId()) {
                addToGame = false;
-//               JOptionPane.showMessageDialog(null, "Add to game false");
             }
         }
-        if(addToGame){
-//            JOptionPane.showMessageDialog(null, "Add to game if true");
+        if (addToGame) {
             players.add(new Player(gun, client));
         }
         iterateCounter();
-//        JOptionPane.showMessageDialog(null, "Players size (que) = "+players.size());
     }
 
     protected Room getAvailableRoom()
@@ -247,25 +248,46 @@ public class Server extends ServerService
 
     public class Room
     {
-        protected final static int NOT_PLAYING = -1;
+        public final static int NO_PLAYER = -1;
         protected final static int DEFAULT_SIZE = 2;
+        protected int currentState = State.NOT_PLAYING;
 
         protected int id;
-        protected int currentPlayerId = NOT_PLAYING;
+        protected int currentPlayerId = NO_PLAYER;
         protected Player[] players;
         protected int playerCount = 0;
         protected int pointsForShooting;
-        protected int pointsPerShot = 1;
+        protected int pointsForReplaying;
+        protected int pointsPerShot = 2;
 
         public Room(int size)
         {
             id = nextRoomId++;
             players = new Player[size];
             pointsForShooting = 1;
+            pointsForReplaying = 2;
         }
 
-        public boolean isFull()
-        {
+        public int getCurrentState() {
+            return currentState;
+        }
+
+        public void setCurrentState(int currentState) {
+            this.currentState = currentState;
+        }
+
+        public boolean areAllReady() {
+//            boolean isReady = false;
+            logger.debug("Room.areAllReady()");
+            for (Player elem : getPlayers()) {
+                if (elem == null || elem.isReady()== false) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean isFull() {
             return (playerCount == players.length);
         }
 
@@ -302,6 +324,7 @@ public class Server extends ServerService
             if (currentPlayerId >= players.length)
                 currentPlayerId = 0;
             Player player = players[currentPlayerId];
+            logger.debug("Next Player Dead = " + player.isDead());
             if (player == null)
                 dead = true;
             else
@@ -319,12 +342,14 @@ public class Server extends ServerService
                     return false;
 
                 player = players[currentPlayerId];
+                logger.debug("Next Player Dead = " + player.isDead());
                 if (player == null)
                     dead = true;
                 else
                     dead = player.isDead();
             }
 
+            logger.debug("Next Player returning true");
             return true;
         }
 
@@ -347,6 +372,10 @@ public class Server extends ServerService
                         rooms.remove(this);
                     // TODO : ? What happens if a game is active!?
                     // TODO : ? What happens if someone is left all alone
+                    if (playerCount < 2 && currentState == State.PLAYING) {
+                        finish();
+                    }
+
                     sendToAll(new StateContent(getState()));
                     return true;
                 }
@@ -372,7 +401,7 @@ public class Server extends ServerService
          */
         public Player getCurrentPlayer()
         {
-            if (currentPlayerId == NOT_PLAYING)
+            if (currentPlayerId == NO_PLAYER)
                 return null;
 
             return players[currentPlayerId];
@@ -409,6 +438,11 @@ public class Server extends ServerService
             return this.players[index];
         }
 
+        public int getPointsForReplaying()
+        {
+            return this.pointsForReplaying;
+        }
+
         /**
          * Gets the pointsForShooting for this instance.
          *
@@ -440,9 +474,15 @@ public class Server extends ServerService
             return null;
         }
 
-        public State getState()
-        {
-            return new State(this);
+        /**
+         * Returns a new instance of State
+         * 
+         * @return a new instance of State
+         */
+        public State getState() {
+            State state = new State(this);
+            logger.debug(state.toString());
+            return state;
         }
 
         public void increasePoints()
@@ -455,13 +495,22 @@ public class Server extends ServerService
             pointsForShooting = pointsPerShot;
         }
 
-        public void finish()
-        {
-            currentPlayerId = NOT_PLAYING;
-            for (int i = 0; i < players.length; ++i)
+        public void finish() {
+            logger.debug("finish():");
+            currentPlayerId = NO_PLAYER;
+            currentState = State.GAME_OVER;
+            gun.spinChamber();
+            resetPoints();
+            for (int i = 0; i < players.length; ++i) {
+                if (players[i] != null) {
                 players[i].setReady(false);
+                }
+            }
 
-            sendToAll(new Content(Content.GAME_OVER));
+
+            sendToAll(new StateContent(getState()));
+            logger.debug("KALLE finish()" + getState());
+            currentState = State.NOT_PLAYING;
         }
 
         public void start()
@@ -469,6 +518,18 @@ public class Server extends ServerService
             int starter = random.nextInt(players.length);
             logger.debug("starter=" + starter);
             currentPlayerId = starter;
+            setAllPlayersAlive();
+            gun = new Gun(6);
+            currentState = State.PLAYING;
+        }
+
+        public void setAllPlayersAlive()
+        {
+            for (int i = 0; i < players.length; ++i)
+            {
+                if (players[i] != null)
+                    players[i].setAlive();
+            }
         }
 
         public void sendToAll(whatevergame.services.Content content)
@@ -479,6 +540,16 @@ public class Server extends ServerService
                 if (player != null)
                     send(player.getClient(), content);
             }
+        }
+
+        private int playersAlive() {
+            int counter = 0;
+            for (int i = 0; i < players.length; i++) {
+                if (players[i].isDead() == false) {
+                    counter++;
+                }
+            }
+            return counter;
         }
     }
 }

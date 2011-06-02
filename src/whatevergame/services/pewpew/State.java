@@ -9,16 +9,32 @@ import whatevergame.services.pewpew.server.Server;
 @SuppressWarnings("serial")
 public class State implements Serializable
 {
+    public static final int NOT_PLAYING = 0;
+    public static final int PLAYING     = 1;
+    public static final int GAME_OVER   = 2;
+    
+    protected int state;
     protected int pointsForShooting;
     protected int currentPlayerId;
     protected StatePlayer[] players;
+
+    /**
+     * Returns the current state of the room
+     * 
+     * NOT_PLAYING = 0, PLAYING = 1, GAME_OVER = 2
+     * 
+     * @return current state of the room
+     */
+    public int getState() {
+        return state;
+    }
 
     public State(Server.Room room)
     {
         Player[] roomPlayers = room.getPlayers();
 
         players = new StatePlayer[roomPlayers.length];
-
+        state = room.getCurrentState();
         pointsForShooting = room.getPointsForShooting();
         currentPlayerId = room.getCurrentPlayerId();
 

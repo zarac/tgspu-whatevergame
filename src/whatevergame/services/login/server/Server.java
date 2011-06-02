@@ -87,7 +87,7 @@ public class Server extends ServerService
     {
         super.addClient(client);
         logger.info("client added\n    [" + client + "]");
-        send(client, new Content(Content.CMD_LOGIN, "Welcome!"));
+        send(client, new Content(Content.CMD_GREET, "Welcome!"));
     }
 
     protected User logIn(String username, String password)

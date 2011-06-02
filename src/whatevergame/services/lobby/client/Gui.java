@@ -13,7 +13,6 @@ import java.awt.event.WindowListener;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
@@ -52,12 +51,13 @@ public class Gui extends JFrame implements WindowListener
         setVisible(false);
         setLayout(new GridLayout(1,1));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        
         addWindowListener(this);
         dimension = Toolkit.getDefaultToolkit().getScreenSize();
 
         mainPanel = new JPanel();
         gameSelector = new GameSelector();
-        gameBox = new JPanel();
+        gameBox = new JPanel(new GridLayout(1, 1));
         chat = new Chat();
         highScore = new HighScore();
         backToGameSelect = new BackToGameSelect();
@@ -86,7 +86,7 @@ public class Gui extends JFrame implements WindowListener
     public void selectGame()
     {
         client.getService(Service.PEWPEW).disable();
-        client.getService(Service.FIVEPAD).disable();
+//        client.getService(Service.FIVEPAD).disable();
         gameBox.removeAll();
         gameSelector.revalidate();
         gameBox.add(gameSelector);
@@ -95,7 +95,8 @@ public class Gui extends JFrame implements WindowListener
 
     protected void init()
     {
-        setBounds(dimension.width/4, dimension.height/4, dimension.width/2, dimension.height/2);
+        //setBounds(dimension.width/4, dimension.height/4, dimension.width/2, dimension.height/2);
+        setBounds((dimension.width/4), (dimension.height/10), (dimension.width/3)*2, (dimension.height/10)*7);
 
         mainPanel.removeAll();
 
@@ -302,7 +303,8 @@ public class Gui extends JFrame implements WindowListener
 
     protected class PlayPewPew extends JPanel implements MouseListener
     {
-        protected final static String imagePath = "data/images/logoPewWep.jpg";
+        protected final static String imagePath = "data/images/pewPewLogo.jpg";
+        //protected final static String imagePath = "data/images/logoPewWep.jpg";
         protected Image image;
 
         protected PlayPewPew()
@@ -330,7 +332,8 @@ public class Gui extends JFrame implements WindowListener
         {
             super.paintComponent(g);
             int width = Gui.this.getSize().width/2;
-            int height = Gui.this.getSize().height/2;
+            int height = Gui.this.getSize().height;
+            //int height = Gui.this.getSize().height/2;
             setPreferredSize(new Dimension(width, height));
             image = new ImageIcon(getScaledImage(imagePath, width, height)).getImage();
             g.drawImage(image, 0, 0, null);
@@ -395,11 +398,16 @@ public class Gui extends JFrame implements WindowListener
 
     protected class GameSelector extends JPanel
     {
+        /**
+         * {@inheritDoc}
+         * @see JPanel#GameSelector()
+         */
         protected GameSelector()
         {
-            setLayout(new GridLayout(2,1));
+            setLayout(new GridLayout(1,1));
+            //setLayout(new GridLayout(2,1));
             add(new PlayPewPew());
-            add(new PlayFivePad());
+            //add(new PlayFivePad());
         }
     }
 

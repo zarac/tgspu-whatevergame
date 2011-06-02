@@ -1,5 +1,7 @@
 package whatevergame.services.login.client;
 
+import javax.swing.JOptionPane;
+
 import whatevergame.services.ClientService;
 
 import whatevergame.services.login.Content;
@@ -61,12 +63,18 @@ public class Client extends ClientService
                     ((ClientService)services.get(LOGIN)).disable();
                     ((ClientService)services.get(LOBBY)).enable();
                 }
+                else
+                    JOptionPane.showMessageDialog(null, "Failed to log in! Please try again.");
                 break;
             case (Content.CMD_LOGOUT):
                 logger.debug("did i log out?");
                 break;
             case (Content.CMD_REGISTER):
-                logger.debug("did i register?");
+                if (content.getArgument().split(":")[0].equals("fail"))
+                    JOptionPane.showMessageDialog(null, "Failed to register!");
+                else
+                    JOptionPane.showMessageDialog(null, "Congrats! Please log in!");
+                //logger.debug("did i register?");
                 break;
             default:
                 logger.warning("unknown command");

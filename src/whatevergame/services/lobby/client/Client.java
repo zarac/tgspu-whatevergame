@@ -45,6 +45,11 @@ public class Client extends ClientService
         return (whatevergame.services.pewpew.client.Client)client.getService(PEWPEW);
     }
 
+    public void selectGame()
+    {
+        gui.selectGame(); 
+    }
+
     /**
      * {@inheritDoc}
      * @see ClientService#enable()

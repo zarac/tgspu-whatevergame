@@ -8,9 +8,14 @@ import whatevergame.services.ServerService;
 
 public class Server extends ServerService
 {
+    protected Database database;
+
+    protected String motd;
+
     public Server(int id, whatevergame.server.Server server)
     {
         super(id, server);
+        database = new Database();
     }
 
     /**
@@ -19,9 +24,8 @@ public class Server extends ServerService
      */
     public void receive(Client client, whatevergame.services.Content p_content)
     {
-        Content content = (Content)p_content;
-        logger.info("client sent us motd = " + content);
-        send(client, new Content("TODAY THE WEATHER IS RAINY, NOT!"));
+        //logger.info("client sent us motd = " + content);
+        send(client, new Content(database.getLatestMotd()));
     }
 
     @Override
@@ -29,6 +33,6 @@ public class Server extends ServerService
     {
         super.addClient(client);
 
-        send(client, new Content("WELCOME TODAY IS RAINY, NOT!"));
+        send(client, new Content(database.getLatestMotd()));
     }
 }

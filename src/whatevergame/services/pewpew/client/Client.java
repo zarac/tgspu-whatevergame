@@ -4,11 +4,14 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Random;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import whatevergame.services.ClientService;
+import whatevergame.services.Service;
 
 import whatevergame.services.pewpew.Content;
 import whatevergame.services.pewpew.StateContent;
@@ -28,7 +31,9 @@ public class Client extends ClientService {
     private int randomInt = 0;
     private PewPewGui gui;
     private int myId;
-    private State currentState, lastState;
+    private State currentState, previousState;
+    protected final static int NOT_PLAYING = -1;
+    private String pathGameOver = "data/images/pewPewGameOver.jpg";
 
     /**
      * {@inheritDoc}
@@ -51,6 +56,8 @@ public class Client extends ClientService {
      * @see ClientService#enable()
      */
     public void enable() {
+        currentState = null;
+        previousState = null;
         send(new Content(Content.PEWPEW_INIT));
     }
 
@@ -103,18 +110,26 @@ public class Client extends ClientService {
     public void setImageLive() {
         randomInt = rand.nextInt(arrLive.length);
         gui.setImageToLabel(arrLive[randomInt]);
+        gui.revalidate();
     }
 
     // Från CPP
     public void setImageNormal() {
         randomInt = rand.nextInt(arrNormal.length);
         gui.setImageToLabel(arrNormal[randomInt]);
+        gui.revalidate();
     }
 
     // Från CPPP
     public void setImageDead() {
         randomInt = rand.nextInt(arrDead.length);
         gui.setImageToLabel(arrDead[randomInt]);
+        gui.revalidate();
+    }
+
+    public void setImageGameOver() {
+        gui.setImageToLabel(resizeImage(pathGameOver));
+        gui.revalidate();
     }
 
     // Från CPP
@@ -122,34 +137,59 @@ public class Client extends ClientService {
         this.gui = p_pewPew;
     }
 
-    // TODO : Shouldn't need to cast
     @Override
     public void receive(whatevergame.services.Content p_content) {
 
 
         if (p_content instanceof Content) {
             Content content = (Content) p_content;
+
             if (content.getCommand() == Content.PLAYER_ID) {
                 myId = content.getPlayerId();
             }
+            if (content.getCommand() == Content.GAME_OVER) {
+                gui.toggleButtonGameOver();
+            }
         } else if (p_content instanceof StateContent) {
             StateContent stateContent = (StateContent) p_content;
-            lastState = currentState;
+            previousState = currentState;
             currentState = stateContent.getState();
 
+            logger.debug("stateContent currentState.getState()" + currentState.getState());
 
-            if (lastState != null)
-            {
-                if (lastState.getCurrentPlayerId() != currentState.getCurrentPlayerId())
-                {
+            updateLabelPlayer();
+
+            // OM EJ PLAYING
+            if (currentState.getState() == State.NOT_PLAYING) {
+                if (currentState.getPlayer(myId).isReady()) {
+                    setImageNormal();
+                    gui.toggleButtonNotStarted();
+                } else {
+                    gui.toggleButtonGameOver();
+                }
+
+
+                updateLabelPlayer();
+                gui.setLabelScore("Points per shot: " + currentState.getPointsForShooting());
+
+            } else if (currentState.getState() == State.PLAYING) {
+                if (currentState.getCurrentPlayerId() == myId) {
+                    gui.toggleButtonPlayingCurrentPlayer();
+                } else {
+                    gui.toggleButtonPlayingNotCurrentPlayer();
+                }
+
+                if (previousState != null) {
+                    // Somebody shot, next player
+                    if (previousState.getCurrentPlayerId() != currentState.getCurrentPlayerId()) {
                     StatePlayer[] players = currentState.getPlayers();
-                    int playerId = lastState.getCurrentPlayerId();
 
-                    if (playerId >= 0)
-                    {
-                        if (players[playerId] != null)
-                        {
-                            if (players[playerId].isDead()) {
+                        int lastPlayerId = previousState.getCurrentPlayerId();
+
+                        // Spelet pågår fortfarande
+                        if (lastPlayerId >= 0) {
+                            if (players[lastPlayerId] != null) {
+                                if (players[lastPlayerId].isDead()) {
                                 setImageDead();
                                 try {
                                     Thread.sleep(2000);
@@ -168,41 +208,67 @@ public class Client extends ClientService {
                             }
                         }
                     }
-                    else
-                    {
-                        logger.debug("playerId = NOT_PLAYING");
+                    } else {
+                        logger.debug("spun");
                     }
+                } else {
+                    setImageNormal();
                 }
-                else
-                {
-                    logger.debug("spun!");
-                }
-            }
-            
-            if (currentState.getCurrentPlayerId() == myId) {
-                gui.toggleButtonActivity(true);
-            } else {
-                gui.toggleButtonActivity(false);
-            }
 
-            logger.debug("HEELLLOO!?");
-            gui.setLabelScore(String.valueOf(currentState.getPointsForShooting()));
+                gui.setLabelScore("Points for shooting: " + String.valueOf(currentState.getPointsForShooting()));
+
+            } else if (currentState.getState() == State.GAME_OVER) {
+
+                setImageDead();
+                try {
+                    Thread.sleep(2000);
+                    setImageGameOver();
+                } catch (InterruptedException ex) {
+                    logger.error("State.GAME_OVER = InterruptedException: " + ex);
+                }
+                gui.toggleButtonGameOver();
+            }
         }
     }
+            
+    public void disable() {
+        send(new Content(Content.PEWPEW_EXIT));
+        logger.debug("in disable()");
+        currentState = null;
+        previousState = null;
+    }
 
-    public void Shoot() {
+    public void updateLabelPlayer() {
+        String labelPlayersString = "";
+        for (StatePlayer player : currentState.getPlayers()) {
+            if (player != null) {
+                if (player.isDead())
+                    labelPlayersString += "-";
+                labelPlayersString += player.getName() + " ";
+            }
+        }
+        gui.setLabelPlayers(labelPlayersString);
+    }
+
+    public void shoot() {
         send(new Content(Content.PEWPEW_SHOOT));
     }
 
-    public void Spin() {
+    public void spin() {
         send(new Content(Content.PEWPEW_SPIN));
     }
 
-    public void Que() {
+    public void replay() {
         send(new Content(Content.PEWPEW_REPLAY));
+        currentState = null;
+        previousState = null;
     }
 
-    public void Exit() {
+    public void exit() {
         send(new Content(Content.PEWPEW_EXIT));
+        disable();
+        whatevergame.services.lobby.client.Client lobby = (whatevergame.services.lobby.client.Client) client.getService(Service.LOBBY);
+        lobby.selectGame();
+
     }
 }

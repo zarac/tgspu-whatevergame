@@ -5,13 +5,11 @@
 package whatevergame.services.pewpew.client;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -23,10 +21,8 @@ import javax.swing.JPanel;
  */
 public class PewPewGui extends JPanel {
 
-//    private ControllerMenu controllerMenu;
-//    private ControllerPewPew client;
     private Client client;
-    private JButton buttonShoot, buttonSpin, buttonQuit, /*ny*/ buttonQue;
+    private JButton buttonShoot, buttonSpin, buttonQuit, /*ny*/ buttonReplay;
     private JLabel labelBack, labelScore, labelPlayers;
     private JPanel panelButton, panelMain;
     private Dimension frameDimension, panelButtonDimension, buttonDimension, screenDimension;
@@ -34,11 +30,9 @@ public class PewPewGui extends JPanel {
     public PewPewGui(Client p_client) {
         this.client = p_client;
 
-//        FrameTemp frameTemp = new FrameTemp();
         client.setGuiPewPew(this);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
-        this.setBorder(BorderFactory.createMatteBorder(5, 5, 0, 0, Color.GREEN));
         
         labelBack = new JLabel();
         client.setImageNormal();
@@ -50,18 +44,18 @@ public class PewPewGui extends JPanel {
         panelButtonDimension = new Dimension(frameDimension.width / 2, frameDimension.height / 5);
         buttonDimension = new Dimension(panelButtonDimension.width / 6, panelButtonDimension.height / 3);
 
-        panelButton = new JPanel(new FlowLayout(0, 5, 10));
+        panelButton = new JPanel(new GridLayout(2,1));
         panelButton.setOpaque(false);
 
         panelButton.setPreferredSize(panelButtonDimension);
         buttonShoot = new JButton("shoot");
         buttonSpin = new JButton("spin");
         buttonQuit = new JButton("quitz");
-        buttonQue = new JButton("que");
+        buttonReplay = new JButton("Replay");
         buttonShoot.setPreferredSize(buttonDimension);
         buttonSpin.setPreferredSize(buttonDimension);
         buttonQuit.setPreferredSize(buttonDimension);
-        buttonQue.setPreferredSize(buttonDimension);
+        buttonReplay.setPreferredSize(buttonDimension);
 
 
         // ActionListeners
@@ -69,34 +63,60 @@ public class PewPewGui extends JPanel {
         buttonShoot.addActionListener(myListener);
         buttonSpin.addActionListener(myListener);
         buttonQuit.addActionListener(myListener);
-        buttonQue.addActionListener(myListener);
+        buttonReplay.addActionListener(myListener);
 
 
         // Lägger till knapparna till panelerna
-        panelButton.add(buttonSpin);
-        panelButton.add(buttonShoot);
-        panelButton.add(buttonQuit);
-        panelButton.add(buttonQue);
-        panelButton.add(labelScore);
-        panelButton.add(labelPlayers);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout());
+        buttonPanel.add(buttonSpin);
+        buttonPanel.add(buttonShoot);
+        buttonPanel.add(buttonReplay);
+        buttonPanel.add(buttonQuit);
+        buttonPanel.setVisible(true);
+        JPanel scorePanel = new JPanel();
+        scorePanel.setLayout(new GridLayout());
+        scorePanel.add(labelScore);
+        scorePanel.add(labelPlayers);
+        scorePanel.setVisible(true);
+        panelButton.add(buttonPanel);
+        panelButton.add(scorePanel);
+        
         this.add(panelButton, BorderLayout.SOUTH);
         this.add(labelBack, BorderLayout.CENTER);
     }
 
-    public void toggleButtonActivity(boolean p_boolean) {
-        buttonShoot.setEnabled(p_boolean);
-        buttonSpin.setEnabled(p_boolean);
-        buttonQue.setEnabled(p_boolean);
+    public void toggleButtonPlayingCurrentPlayer(){
+        buttonShoot.setEnabled(true);
+        buttonSpin.setEnabled(true);
+        buttonReplay.setEnabled(false);
     }
-
-    public void toggetButtonActivityGameOver() {
+    public void toggleButtonPlayingNotCurrentPlayer(){
         buttonShoot.setEnabled(false);
         buttonSpin.setEnabled(false);
-        buttonQue.setEnabled(true);
+        buttonReplay.setEnabled(false);
+    }
+
+//    public void toggleButtonActivity(boolean p_boolean) {
+//        buttonShoot.setEnabled(p_boolean);
+//        buttonSpin.setEnabled(p_boolean);
+//        buttonReplay.setEnabled(p_boolean);
+//    }
+
+    public void toggleButtonGameOver() {
+        buttonShoot.setEnabled(false);
+        buttonSpin.setEnabled(false);
+        buttonReplay.setEnabled(true);
+    }
+    public void toggleButtonNotStarted(){
+        buttonShoot.setEnabled(false);
+        buttonSpin.setEnabled(false);
+        buttonReplay.setEnabled(false);
     }
 
     public void setImageToLabel(ImageIcon p_image) {
         labelBack.setIcon(p_image);
+        labelBack.repaint();
     }
     
     public void setLabelScore(String p_string){
@@ -104,7 +124,7 @@ public class PewPewGui extends JPanel {
         
     }
 
-    public void setPlayers(String players)
+    public void setLabelPlayers(String players)
     {
         labelPlayers.setText(players);
     }
@@ -113,20 +133,21 @@ public class PewPewGui extends JPanel {
 
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == buttonShoot) {
-                System.out.println("Shoot");
-                client.Shoot();
+//                System.out.println("Shoot");
+                client.shoot();
+                toggleButtonPlayingNotCurrentPlayer();
             }
             if (e.getSource() == buttonSpin) {
-                System.out.println("Spin");
-                client.Spin();
+//                System.out.println("Spin");
+                client.spin();
             }
-            if (e.getSource() == buttonQue) {
-                System.out.println("Que");
-                client.Que();
+            if (e.getSource() == buttonReplay) {
+//                System.out.println("Que");
+                client.replay();
             }
             if (e.getSource() == buttonQuit) {
-                System.out.println("Exit");
-                client.Exit();
+//                System.out.println("Exit");
+                client.exit();
             }
         }
     }

@@ -6,6 +6,8 @@ package whatevergame.services.pewpew.server.logic;
 
 import java.util.Random;
 
+import logging.Logger;
+
 /**
  *
  * @author anderswik
@@ -16,11 +18,17 @@ public class Gun {
  private int bulletPos;
  private int currentPos;
  
+    /**
+     * A logger, it's handy to have.
+     */
+    protected Logger logger;
+ 
  public Gun(int chambers){
      random = new Random();
      currentPos = 0;
      nbrOfChambers = chambers;
      bulletPos = initBulletPos();
+     logger = new Logger(this);
  }
  
  public int initBulletPos(){
@@ -30,17 +38,26 @@ public class Gun {
  
  public void spinChamber(){
      currentPos = random.nextInt(nbrOfChambers);
-     System.out.println("current pos"+currentPos);
+     logger.debug("current pos"+currentPos);
  }
  
- public boolean fireGun() {
+ public boolean fireGun()
+ {
      if(++currentPos > nbrOfChambers)
          currentPos = 0;
 
+     logger.debug("fireGun() : current pos=" + currentPos + ", bulletPos=" + bulletPos);
+
      if (currentPos == bulletPos)
+     {
+         logger.debug("HIT! returning true");
          return true;
+     }
      else
+     {
+         logger.debug("MISS! returning false");
          return false;
+     }
  }
  
  public static void main(String[] args){

@@ -98,7 +98,8 @@ public class Connection
     public void send(Package p_package)
     {
         logger.debug("sender = " + sender);
-        sender.enqueue(p_package);
+        //sender.enqueue(p_package);
+        sender.send(p_package);
     }
 
     /**

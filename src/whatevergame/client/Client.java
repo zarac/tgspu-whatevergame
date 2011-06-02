@@ -87,7 +87,7 @@ public class Client
         services.add(Service.QUICKLY, new whatevergame.services.quickly.client.Client(Service.QUICKLY, this));
 
         // TODO : temp
-        ((ClientService)services.get(Service.QUICKLY)).enable();
+        //((ClientService)services.get(Service.QUICKLY)).enable();
     }
 
     /**

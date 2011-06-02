@@ -2,15 +2,25 @@ package whatevergame.services.motd;
 
 public class Content extends whatevergame.services.Content
 {
-    protected String content;
+    protected String motd;
 
-    public Content(String str)
+    public Content(String motd)
     {
-        content = str;
+        this.motd = motd;
     }
 
     public String toString()
     {
-        return content;
+        return motd;
+    }
+
+    /**
+     * Gets the motd for this instance.
+     *
+     * @return The motd.
+     */
+    public String getMotd()
+    {
+        return this.motd;
     }
 }

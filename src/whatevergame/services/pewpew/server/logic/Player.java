@@ -24,6 +24,7 @@ public class Player {
         this.id = client.getSessionId();
         dead = false;
         round = 0;
+        ready = true;
     }
     
     public void spinChamber(){
@@ -78,7 +79,9 @@ public class Player {
     public void setToDead() {
         dead = true;
     }
-    
-    
-    
+
+    public void setAlive()
+    {
+        dead = false;
+    }
 }

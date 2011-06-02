@@ -45,7 +45,9 @@ public class Database extends MySqlDatabase
     public User addUser(String username, String password)
     {
         logger.info("Registering user '" + username + "'");
-        doInsert("INSERT INTO " + userTable + "(username,password) VALUES('" + username + "', '" + password + "')");
+        doInsert("INSERT INTO " + userTable +
+                "(username,password,score) VALUES('" + username + "', '" +
+                password + "', 0)");
         return getUserByUsername(username);
     }
 

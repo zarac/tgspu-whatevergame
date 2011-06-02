@@ -2,6 +2,7 @@ package whatevergame.services.login;
 
 public class Content extends whatevergame.services.Content
 {
+    public final static int CMD_GREET = 0;
     public final static int CMD_LOGIN = 1;
     public final static int CMD_LOGOUT = 2;
     public final static int CMD_REGISTER = 3;
