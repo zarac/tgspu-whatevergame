@@ -40,7 +40,7 @@ Structure (in Swedish, needed when turning in project)
 /whatevergame/services - här finns alla tjänster i enskilda paket. innehåller också ramverksfilerna
 /whatevergame/services/ServerService - abstrakt klass som serverdelen av en service ska implementera
 /whatevergame/services/ClientService - abstrakt klass som klientdelen av en service ska implementera
-/whatevergame/services/Service - gemensamnt hos både klient- och serverservicar
+/whatevergame/services/Service - gemensamnt hos både klient- och serverservicar innehåller också en lista på alla services tillsammans med ett id (bör igentligen vara dynamiskt)
 /whatevergame/services/ServiceProvider - en simpel kollektion av services
 /whatevergame/services/Content - informationen som skickas mellan klient och server
 /whatevergame/services/Package - en wrapper runt ett 'Content'. innehåller ett seriviceId för att 'Connection.Receiver' skall kunna derigera 'Content' till rätt service
